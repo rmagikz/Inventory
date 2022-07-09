@@ -24,7 +24,7 @@ private:
 
     void SetStatus(const char* status) {
         for (int i = 0; i < 3; i++) {
-            if (status == m_status_names[i]) { m_status = (Status)i; }
+            if (strcmp(m_status_names[i], status) == 0) { m_status = (Status)i; }
         }
     }
 
@@ -46,7 +46,7 @@ private:
         items.push_back(Item(items.size()+1));
     }
 
-    Item* FindItemID(int itemId) {
+    Item* FindItemID(const int& itemId) {
         for (int i = 0; i < items.size(); i++) {
             if (std::stoi(items[i].m_id) == itemId) {
                 return &items[i];
@@ -59,7 +59,7 @@ private:
         items.push_back(Item(items.size()+1));
     }
 
-    void SetCost(int& cost) {
+    void SetCost(const int& cost) {
         m_cost = cost;
     }
 
@@ -79,9 +79,18 @@ class Inventory {
 private:
     std::vector<Category> inventoryList;
 
-    Category* FindCategoryID(int categoryId) {
+    Category* FindCategoryID(const int& categoryId) {
         for (int i = 0; i < inventoryList.size(); i++) {
             if (std::stoi(inventoryList[i].m_id) == categoryId) {
+                return &inventoryList[i];
+            }
+        }
+        return 0;
+    }
+
+    Category* FindCategoryName(const char* categoryName) {
+        for (int i = 0; i < inventoryList.size(); i++) {
+            if (inventoryList[i].m_name == categoryName) {
                 return &inventoryList[i];
             }
         }
@@ -92,12 +101,12 @@ public:
     Inventory(const int& count) { inventoryList.reserve(count); }
 
     //ADD ONE ITEM TO CATEGORY
-    void AddItem(int categoryId) {
+    void AddItem(const int& categoryId) {
         FindCategoryID(categoryId)->AddItem();
     }
 
     //ADD MULTIPLE ITEMS TO CATEGORY
-    void AddItem(int categoryId, int count) {
+    void AddItem(const int& categoryId, const int& count) {
         for (int i = 0; i < count; i++) {
             AddItem(categoryId);
         }
@@ -105,41 +114,32 @@ public:
 
     //ADD NEW ITEM AND CREATES CATEGORY FOR IT | DOES NOT WORK IF CATEGORY WITH SAME NAME ALREADY EXISTS
     void CreateItem(const char* name, const int& cost) {
-        for (int i = 0; i < inventoryList.size(); i++) {
-            if (inventoryList[i].m_name == name) {
-                return;
-            }
-        }
+        if (FindCategoryName(name)) return;
         inventoryList.push_back(Category(name, cost));
     }
 
-    void SetStatus(int categoryId, int itemId, const char* status) {
+    int SetStatus(const int& categoryId, const int& itemId, const char* status) {
         if (Category* category = FindCategoryID(categoryId)) {
             if (Item* item = category->FindItemID(itemId)) {
                 item->SetStatus(status);
+                return 0;
             }
-        }
-    }
-
-    int SetPrice(const char* name, int price) {
-        for (int i = 0; i < inventoryList.size(); i++) {
-            if (inventoryList[i].m_name == name) {
-                inventoryList[i].m_cost = price;
+            else {
                 return 1;
             }
         }
-        return 0;
+        else {
+            return 2;
+        }
     }
 
-    //int SetPrice(int categoryId, int price) {
-    //    for (int i = 0; i < inventoryList.size(); i++) {
-    //        if (inventoryList[i].m_id == categoryId) {
-    //            inventoryList[i].m_cost = price;
-    //            return 1;
-    //        }
-    //    }
-    //    return 0;
-    //}
+    void SetPrice(const char* name, const int& price) {
+        if (Category* category = FindCategoryName(name))  category->m_cost = price;
+    }
+
+    void SetPrice(const int& categoryId, const int& price) {
+        if (Category* category = FindCategoryID(categoryId))  category->m_cost = price;
+    }
 
     void Display() {
         for (int i = 0; i < inventoryList.size(); i++) {

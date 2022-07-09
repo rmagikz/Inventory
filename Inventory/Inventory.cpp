@@ -1,4 +1,5 @@
 #include "Inventory.h"
+#include "Common.h"
 
 int main() {
     //SETUP
@@ -13,8 +14,6 @@ int main() {
         inventory.AddItem(i,3);
     }
 
-    inventory.SetStatus(10001, 10001, "Deleted");
-
     //INPUT
     std::cout << "Inventory Program\n\n";
     std::cout << "Please choose one\n\n";
@@ -22,11 +21,39 @@ int main() {
     std::cout << "Add       - add item\n";
     std::cout << "Search    - display full inventory\n\n";
 
-    std::string input;
-    getline(std::cin, input);
-    std::cout << std::endl;
+    while (true) {
+        //std::string input;
+        //getline(std::cin, input);
+        //std::cout << std::endl;
 
-    if (input == "display") { inventory.Display(); }
+        //if (input == "exit") break;
+
+        //if (input == "display") { inventory.Display(); }
+
+        //if (split(input, " ") == "setprice") {
+        //    std::cout << split(input, " ") << std::endl;
+        //    std::cout << split(input, " ", 1) << std::endl;
+        //    std::cout << split(input, " ", 2) << std::endl;
+        //}
+
+        std::string command, arg1, arg2, arg3;
+        std::cin >> command;
+        if (command == "display") { inventory.Display(); }
+        if (command == "exit") { break; }
+        if (command == "setprice") {
+            std::cin >> arg1 >> arg2;
+            if (arg1.length() != 0 || arg2.length() != 0) {
+                inventory.SetPrice(stoi(arg1), stoi(arg2));
+            }
+        }
+        if (command == "setstatus") {
+            std::cin >> arg1 >> arg2 >> arg3;
+            if (arg1.length() != 0 && arg2.length() != 0) {
+                std::cout << inventory.SetStatus(stoi(arg1), stoi(arg2), arg3.data()) << std::endl;
+                std::cout << typeid(arg3.c_str()).name();
+            }
+        }
+    }
 
 }
 
