@@ -28,7 +28,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\Desktop\BaseLabel.dymo">
+    <None Include="BaseLabel.dymo">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="newLabel.dymo">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

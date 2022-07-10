@@ -2,7 +2,25 @@
 
 #include "Common.h"
 
-using namespace std::string_literals;
+//using namespace std::string_literals;
+
+void GenerateLabel(const int& categoryId, const int& itemId) {
+    std::fstream baseLabel;
+    std::fstream newLabel;
+    baseLabel.open("BaseLabel.dymo", std::ios::in);
+    newLabel.open("newLabel.dymo", std::ios::out);
+    std::string line;
+    if (baseLabel.is_open()) {
+        while (std::getline(baseLabel, line)) {
+            if (line.find("<DataString>") != std::string::npos) {
+                newLabel << "              <DataString>" << categoryId << "-" << itemId << "</DataString>\n";
+            }
+            else { newLabel << line << "\n"; }
+        }
+        newLabel.close();
+        baseLabel.close();
+    }
+}
 
 std::string AssignID(int count) {
     return std::to_string(count + 10000);
@@ -63,10 +81,6 @@ private:
 
     void SetCost(const int& cost) {
         m_cost = cost;
-    }
-
-    void GenerateLabel(const int& itemId) {
-        if (Item* item = FindItemID(itemId)) { std::cout << "GENERATED LABEL: " << m_id << "-" << item->m_id << std::endl; }
     }
 
     void Display() {
@@ -135,8 +149,12 @@ public:
         if (Category* category = FindCategoryID(categoryId))  category->m_cost = price;
     }
 
-    void GenerateLabel(const int& categoryId, const int& itemId) {
-        if (Category* category = FindCategoryID(categoryId)) { category->GenerateLabel(itemId); }
+    void GetLabel(const int& categoryId, const int& itemId) {
+        if (Category* category = FindCategoryID(categoryId)) {
+            if (category->FindItemID(itemId)) {
+                GenerateLabel(categoryId, itemId);
+            }
+        }
     }
 
     void Display() {
