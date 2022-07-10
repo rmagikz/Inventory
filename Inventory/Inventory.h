@@ -1,8 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <string>
+#include "Common.h"
 
 using namespace std::string_literals;
 
@@ -59,8 +57,16 @@ private:
         items.push_back(Item(items.size()+1));
     }
 
+    void SetStatus(const int& itemId, const char* status) {
+        if (Item* item = FindItemID(itemId)) { item->SetStatus(status); }
+    }
+
     void SetCost(const int& cost) {
         m_cost = cost;
+    }
+
+    void GenerateLabel(const int& itemId) {
+        if (Item* item = FindItemID(itemId)) { std::cout << "GENERATED LABEL: " << m_id << "-" << item->m_id << std::endl; }
     }
 
     void Display() {
@@ -88,6 +94,7 @@ private:
         return 0;
     }
 
+    // might delete
     Category* FindCategoryName(const char* categoryName) {
         for (int i = 0; i < inventoryList.size(); i++) {
             if (inventoryList[i].m_name == categoryName) {
@@ -100,45 +107,36 @@ public:
     Inventory() {}
     Inventory(const int& count) { inventoryList.reserve(count); }
 
-    //ADD ONE ITEM TO CATEGORY
     void AddItem(const int& categoryId) {
         FindCategoryID(categoryId)->AddItem();
     }
 
-    //ADD MULTIPLE ITEMS TO CATEGORY
     void AddItem(const int& categoryId, const int& count) {
         for (int i = 0; i < count; i++) {
             AddItem(categoryId);
         }
     }
 
-    //ADD NEW ITEM AND CREATES CATEGORY FOR IT | DOES NOT WORK IF CATEGORY WITH SAME NAME ALREADY EXISTS
     void CreateItem(const char* name, const int& cost) {
         if (FindCategoryName(name)) return;
         inventoryList.push_back(Category(name, cost));
     }
 
-    int SetStatus(const int& categoryId, const int& itemId, const char* status) {
-        if (Category* category = FindCategoryID(categoryId)) {
-            if (Item* item = category->FindItemID(itemId)) {
-                item->SetStatus(status);
-                return 0;
-            }
-            else {
-                return 1;
-            }
-        }
-        else {
-            return 2;
-        }
+    void SetStatus(const int& categoryId, const int& itemId, const char* status) {
+        if (Category* category = FindCategoryID(categoryId)) category->SetStatus(itemId, status);
     }
 
+    // might delete
     void SetPrice(const char* name, const int& price) {
         if (Category* category = FindCategoryName(name))  category->m_cost = price;
     }
 
     void SetPrice(const int& categoryId, const int& price) {
         if (Category* category = FindCategoryID(categoryId))  category->m_cost = price;
+    }
+
+    void GenerateLabel(const int& categoryId, const int& itemId) {
+        if (Category* category = FindCategoryID(categoryId)) { category->GenerateLabel(itemId); }
     }
 
     void Display() {

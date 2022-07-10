@@ -133,6 +133,9 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Inventory.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Desktop\BaseLabel.dymo" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

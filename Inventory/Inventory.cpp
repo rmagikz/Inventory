@@ -1,5 +1,4 @@
 #include "Inventory.h"
-#include "Common.h"
 
 int main() {
     //SETUP
@@ -22,20 +21,6 @@ int main() {
     std::cout << "Search    - display full inventory\n\n";
 
     while (true) {
-        //std::string input;
-        //getline(std::cin, input);
-        //std::cout << std::endl;
-
-        //if (input == "exit") break;
-
-        //if (input == "display") { inventory.Display(); }
-
-        //if (split(input, " ") == "setprice") {
-        //    std::cout << split(input, " ") << std::endl;
-        //    std::cout << split(input, " ", 1) << std::endl;
-        //    std::cout << split(input, " ", 2) << std::endl;
-        //}
-
         std::string command, arg1, arg2, arg3;
         std::cin >> command;
         if (command == "display") { inventory.Display(); }
@@ -49,8 +34,7 @@ int main() {
         if (command == "setstatus") {
             std::cin >> arg1 >> arg2 >> arg3;
             if (arg1.length() != 0 && arg2.length() != 0) {
-                std::cout << inventory.SetStatus(stoi(arg1), stoi(arg2), arg3.data()) << std::endl;
-                std::cout << typeid(arg3.c_str()).name();
+                inventory.SetStatus(stoi(arg1), stoi(arg2), arg3.c_str());
             }
         }
     }
