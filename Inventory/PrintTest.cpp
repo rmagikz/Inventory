@@ -10,15 +10,20 @@ int main() {
 	{
 		IFrameworkPtr framework(__uuidof(Framework));
 
-		CString labelA = CString(_T("19mm.label"));
-		ILabelPtr label = framework->OpenLabel(_bstr_t(labelA));
-		IPrinterPtr printer = framework->GetLabelWriterPrinters()->GetItem(0);
+		CString labelA = CString(_T("thelabel.label"));
+		CString printerN = CString(_T("DYMO LabelWriter 450 Turbo"));
+		//ILabelPtr label = framework->OpenLabel(_bstr_t(labelA));
+		ILabelPtr label = framework->OpenLabel(L"thelabel.label");
+		//IPrinterPtr printer = framework->GetLabelWriterPrinters()->GetItem(0);
+		//IPrinterPtr printer = framework->GetPrinterByName(_bstr_t(printerN));
 		IPrintParamsPtr printParams;
 		ILabelWriterPrintParamsPtr labelWriterPrintParams(__uuidof(LabelWriterPrintParams));
 		printParams = labelWriterPrintParams;
 		labelWriterPrintParams->PutRollSelection(RollSelection_Auto);
+		printParams->PutCopies(1);
 
-		label->Print(printer, printParams);
+		//label->Print(printer, printParams);
+		framework->PrintLabel(L"DYMO LabelWriter 450 Turbo", L"", label->SaveToXml(), L"");
 	}
 	catch (_com_error& e)
 	{
