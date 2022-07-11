@@ -1,4 +1,7 @@
+#include "Common.h"
 #include "Inventory.h"
+
+using namespace DYMO_Label_Framework;
 
 int main() {
     //SETUP
