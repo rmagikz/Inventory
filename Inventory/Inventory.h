@@ -2,25 +2,46 @@
 
 #include "Common.h"
 
-//using namespace std::string_literals;
+using namespace DYMO_Label_Framework;
 
-void GenerateLabel(const int& categoryId, const int& itemId) {
+void GenerateLabel(const int& categoryId, const int& itemId, const char* catName, const int& print) {
     std::fstream baseLabel;
     std::fstream newLabel;
-    baseLabel.open("BaseLabel.dymo", std::ios::in);
-    newLabel.open("newLabel.dymo", std::ios::out);
+    baseLabel.open("baseLabel.label", std::ios::in);
+    newLabel.open("newLabel.label", std::ios::out);
     std::string line;
     if (baseLabel.is_open()) {
         while (std::getline(baseLabel, line)) {
-            if (line.find("<DataString>") != std::string::npos) {
-                newLabel << "              <DataString>" << categoryId << "-" << itemId << "</DataString>\n";
+            if (line.find("<Text>") != std::string::npos) {
+                newLabel << "              <Text>" << categoryId << "-" << itemId << "</Text>\n";
+            }
+            else if (line.find("<String") != std::string::npos) {
+                newLabel << "                   <String xml:space=\"preserve\">" << catName << "</String>\n";
             }
             else { newLabel << line << "\n"; }
         }
         newLabel.close();
         baseLabel.close();
     }
+
+    std::cout << catName << std::endl;
+    std::cout << "ID: " << categoryId << "-" << itemId << std::endl;
+
+    if (print) {
+        try
+        {
+            IFrameworkPtr framework(__uuidof(Framework));
+            ILabelPtr label = framework->OpenLabel(L"newLabel.label");
+            framework->PrintLabel(L"DYMO LabelWriter 450 Turbo", L"", label->SaveToXml(), L"");
+        }
+        catch (_com_error& e)
+        {
+            _tprintf_s(_T("Com error was \"%s\", HRESULT 0x%X\n"), e.ErrorMessage(), e.Error());
+        }
+    }
 }
+
+
 
 std::string AssignID(int count) {
     return std::to_string(count + 10000);
@@ -149,10 +170,10 @@ public:
         if (Category* category = FindCategoryID(categoryId))  category->m_cost = price;
     }
 
-    void GetLabel(const int& categoryId, const int& itemId) {
+    void GetLabel(const int& categoryId, const int& itemId, const int& print = 0) {
         if (Category* category = FindCategoryID(categoryId)) {
             if (category->FindItemID(itemId)) {
-                GenerateLabel(categoryId, itemId);
+                GenerateLabel(categoryId, itemId, category->m_name, print);
             }
         }
     }

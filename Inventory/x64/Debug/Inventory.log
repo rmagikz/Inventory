@@ -1,2 +1,4 @@
-﻿  PrintTest.cpp
-  Inventory.vcxproj -> C:\Users\abrif\Projects\Inventory\x64\Debug\Inventory.exe
+﻿  Inventory.cpp
+C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Inventory.h(83,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Inventory.h(96,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Inventory.vcxproj -> C:\Users\abrif\Documents\Projects\Github\Inventory\x64\Debug\Inventory.exe
