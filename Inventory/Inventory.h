@@ -28,6 +28,7 @@ void GenerateLabel(const int& categoryId, const int& itemId, const char* catName
     std::cout << "ID: " << categoryId << "-" << itemId << std::endl;
 
     if (print) {
+        std::cout << "PRINTING LABEL" << std::endl;
         try
         {
             IFrameworkPtr framework(__uuidof(Framework));
@@ -142,19 +143,23 @@ public:
     Inventory() {}
     Inventory(const int& count) { inventoryList.reserve(count); }
 
-    void AddItem(const int& categoryId) {
-        FindCategoryID(categoryId)->AddItem();
-    }
-
-    void AddItem(const int& categoryId, const int& count) {
+    void AddItem(const int& categoryId, const int& count = 1) {
         for (int i = 0; i < count; i++) {
-            AddItem(categoryId);
+            FindCategoryID(categoryId)->AddItem();
         }
     }
 
     void CreateItem(const char* name, const int& cost) {
         if (FindCategoryName(name)) return;
         inventoryList.push_back(Category(name, cost));
+    }
+
+    void CreateItem(const std::string name, const int& cost) {
+        std::cout << name << std::endl;
+        const char* nName = name.c_str();
+        std::cout << nName << std::endl;
+        if (FindCategoryName(nName)) return;
+        inventoryList.push_back(Category(nName, cost));
     }
 
     void SetStatus(const int& categoryId, const int& itemId, const char* status) {

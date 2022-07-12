@@ -7,10 +7,10 @@ int main() {
     //SETUP
     Inventory inventory;
 
-    inventory.CreateItem("iPhone X Screen/LCD", 179);
-    inventory.CreateItem("iPhone 11 Pro Max Screen/LCD", 399);
-    inventory.CreateItem("iPhone 8+ Screen/LCD", 99);
-    inventory.CreateItem("iPad 10.2 (7th Gen) Glass", 169);
+    inventory.CreateItem("iphone x screen/lcd", 179);
+    inventory.CreateItem("iphone 11 pro max screen/lcd", 399);
+    inventory.CreateItem("iphone 8+ screen/lcd", 99);
+    inventory.CreateItem("ipad 10.2 (7th gen) glass", 169);
 
     for (int i = 10001; i < 10005; i++) {
         inventory.AddItem(i,3);
@@ -19,32 +19,67 @@ int main() {
     //INPUT
     std::cout << "Inventory Program\n\n";
     std::cout << "Please choose one\n\n";
-    std::cout << "Display   - display full inventory\n";
-    std::cout << "Add       - add item\n";
-    std::cout << "Search    - display full inventory\n\n";
+    std::cout << "display       - display full inventory\n";
+    std::cout << "createitem    - create new item category\n";
+    std::cout << "additem       - add item to existing category\n";
+    std::cout << "setprice      - set price for a category\n";
+    std::cout << "setstatus     - set status for particular item\n";
+    std::cout << "search        - display full inventory\n";
+    std::cout << "help          - get help for commands\n";
+    std::cout << "exit          - exit program\n\n";
 
     while (true) {
-        std::string command, arg1, arg2, arg3;
-        std::cin >> command;
-        if (command == "display") { inventory.Display(); }
-        if (command == "exit") { break; }
-        if (command == "setprice") {
-            std::cin >> arg1 >> arg2;
-            if (arg1.length() != 0 || arg2.length() != 0) {
-                inventory.SetPrice(stoi(arg1), stoi(arg2));
-            }
-        }
-        if (command == "setstatus") {
-            std::cin >> arg1 >> arg2 >> arg3;
-            if (arg1.length() != 0 && arg2.length() != 0) {
-                inventory.SetStatus(stoi(arg1), stoi(arg2), arg3.c_str());
-            }
+        std::string input;
+        std::getline(std::cin, input);
+        std::stringstream stream(input);
+
+        std::vector<std::string> parsedInput;
+
+        while (stream.good()) {
+            std::string substr;
+            std::getline(stream, substr, ' ');
+            parsedInput.push_back(substr);
         }
 
-        if (command == "getlabel") {
-            std::cin >> arg1 >> arg2 >> arg3;
-            inventory.GetLabel(stoi(arg1), stoi(arg2), stoi(arg3));
+        if (parsedInput[0] == "exit") { break; }
+        if (parsedInput[0] == "display") { inventory.Display(); }
+
+        if (parsedInput[0] == "createitem") {
+            if (parsedInput.size() == 3) {
+                const char* nName = parsedInput[1].c_str();
+                inventory.CreateItem(nName, stoi(parsedInput[2]));
+            } else { std::cout << "Invalid Syntax." << std::endl; }
         }
+
+        if (parsedInput[0] == "additem") {
+            if (parsedInput.size() == 2) {
+                inventory.AddItem(stoi(parsedInput[1]));
+            } else if (parsedInput.size() == 3) {
+                inventory.AddItem(stoi(parsedInput[1]), stoi(parsedInput[2]));
+            } else { std::cout << "Invalid Syntax." << std::endl; }
+        }
+
+        if (parsedInput[0] == "setprice") {
+            if (parsedInput.size() == 3) {
+                inventory.SetPrice(stoi(parsedInput[1]), stoi(parsedInput[2]));
+            } else { std::cout << "Invalid Syntax." << std::endl; }
+        }
+
+        if (parsedInput[0] == "setstatus") {
+            if (parsedInput.size() == 4) {
+                inventory.SetStatus(stoi(parsedInput[1]), stoi(parsedInput[2]), parsedInput[3].c_str());
+            } else { std::cout << "Invalid Syntax." << std::endl; }
+        }
+
+        if (parsedInput[0] == "getlabel") {
+            if (parsedInput.size() == 3) {
+                inventory.GetLabel(stoi(parsedInput[1]), stoi(parsedInput[2]));
+            } else if (parsedInput.size() == 4) {
+                inventory.GetLabel(stoi(parsedInput[1]), stoi(parsedInput[2]), stoi(parsedInput[3]));
+            } else { std::cout << "Invalid Syntax." << std::endl; }
+        }
+
+        parsedInput = std::vector<std::string>();
     }
 
 }

@@ -18,7 +18,7 @@
 			<IsVariable>True</IsVariable>
 			<GroupID>-1</GroupID>
 			<IsOutlined>False</IsOutlined>
-              <Text>10004-10001</Text>
+              <Text>10001-10001</Text>
 			<Type>Code128Auto</Type>
 			<Size>Small</Size>
 			<TextPosition>Bottom</TextPosition>
@@ -49,7 +49,7 @@
 			<Verticalized>False</Verticalized>
 			<StyledText>
 				<Element>
-                   <String xml:space="preserve">iPad 10.2 (7th Gen) Glass</String>
+                   <String xml:space="preserve">iPhone X Screen/LCD</String>
 					<Attributes>
 						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
 						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" HueScale="100" />
