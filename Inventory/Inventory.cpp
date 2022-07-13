@@ -46,8 +46,7 @@ int main() {
 
         if (parsedInput[0] == "createitem") {
             if (parsedInput.size() == 3) {
-                const char* nName = parsedInput[1].c_str();
-                inventory.CreateItem(nName, stoi(parsedInput[2]));
+                inventory.CreateItem(parsedInput[1].c_str(), stoi(parsedInput[2]));
             } else { std::cout << "Invalid Syntax." << std::endl; }
         }
 

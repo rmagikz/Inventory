@@ -129,7 +129,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Inventory.cpp" />
-    <ClCompile Include="PrintTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />

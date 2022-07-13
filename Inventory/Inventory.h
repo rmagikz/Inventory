@@ -4,7 +4,7 @@
 
 using namespace DYMO_Label_Framework;
 
-void GenerateLabel(const int& categoryId, const int& itemId, const char* catName, const int& print) {
+void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print) {
     std::fstream baseLabel;
     std::fstream newLabel;
     baseLabel.open("baseLabel.label", std::ios::in);
@@ -75,7 +75,7 @@ private:
     std::vector<Item> items;
     static int count;
     std::string m_id;
-    const char* m_name;
+    std::string m_name;
     int m_cost;
 
     Category(const char* name, const int& cost)
@@ -130,8 +130,8 @@ private:
         return 0;
     }
 
-    // might delete
     Category* FindCategoryName(const char* categoryName) {
+        std::cout << categoryName << std::endl;
         for (int i = 0; i < inventoryList.size(); i++) {
             if (inventoryList[i].m_name == categoryName) {
                 return &inventoryList[i];
@@ -150,25 +150,13 @@ public:
     }
 
     void CreateItem(const char* name, const int& cost) {
+        std::cout << name << std::endl;
         if (FindCategoryName(name)) return;
         inventoryList.push_back(Category(name, cost));
     }
 
-    void CreateItem(const std::string name, const int& cost) {
-        std::cout << name << std::endl;
-        const char* nName = name.c_str();
-        std::cout << nName << std::endl;
-        if (FindCategoryName(nName)) return;
-        inventoryList.push_back(Category(nName, cost));
-    }
-
     void SetStatus(const int& categoryId, const int& itemId, const char* status) {
         if (Category* category = FindCategoryID(categoryId)) category->SetStatus(itemId, status);
-    }
-
-    // might delete
-    void SetPrice(const char* name, const int& price) {
-        if (Category* category = FindCategoryName(name))  category->m_cost = price;
     }
 
     void SetPrice(const int& categoryId, const int& price) {

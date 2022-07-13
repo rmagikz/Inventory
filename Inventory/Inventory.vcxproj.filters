@@ -18,9 +18,6 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PrintTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inventory.h">
