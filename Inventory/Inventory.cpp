@@ -16,6 +16,8 @@ int main() {
         inventory.AddItem(i,3);
     }
 
+    inventory.ExportToExcel();
+
     //INPUT
     std::cout << "Inventory Program\n\n";
     std::cout << "Please choose one\n\n";
@@ -24,7 +26,7 @@ int main() {
     std::cout << "additem       - add item to existing category\n";
     std::cout << "setprice      - set price for a category\n";
     std::cout << "setstatus     - set status for particular item\n";
-    std::cout << "search        - display full inventory\n";
+    std::cout << "find        - find category\n";
     std::cout << "help          - get help for commands\n";
     std::cout << "exit          - exit program\n\n";
 
@@ -42,15 +44,16 @@ int main() {
         }
 
         if (parsedInput[0] == "exit") { break; }
-        if (parsedInput[0] == "display") { inventory.Display(); }
+        if (parsedInput[0] == "display") { std::cout << std::endl; inventory.Display(); }
 
-        if (parsedInput[0] == "createitem") {
-            if (parsedInput.size() == 3) {
-                inventory.CreateItem(parsedInput[1].c_str(), stoi(parsedInput[2]));
-            } else { std::cout << "Invalid Syntax." << std::endl; }
-        }
+        //if (parsedInput[0] == "createitem") {
+        //    if (parsedInput.size() == 3) {
+        //        inventory.CreateItem(parsedInput[1].c_str(), stoi(parsedInput[2]));
+        //    } else { std::cout << "Invalid Syntax." << std::endl; }
+        //}
 
         if (parsedInput[0] == "additem") {
+            std::cout << std::endl;
             if (parsedInput.size() == 2) {
                 inventory.AddItem(stoi(parsedInput[1]));
             } else if (parsedInput.size() == 3) {
@@ -59,20 +62,30 @@ int main() {
         }
 
         if (parsedInput[0] == "setprice") {
+            std::cout << std::endl;
             if (parsedInput.size() == 3) {
                 inventory.SetPrice(stoi(parsedInput[1]), stoi(parsedInput[2]));
             } else { std::cout << "Invalid Syntax." << std::endl; }
         }
 
         if (parsedInput[0] == "setstatus") {
+            std::cout << std::endl;
             if (parsedInput.size() == 4) {
                 inventory.SetStatus(stoi(parsedInput[1]), stoi(parsedInput[2]), parsedInput[3].c_str());
             } else { std::cout << "Invalid Syntax." << std::endl; }
         }
 
+        if (parsedInput[0] == "find") {
+            std::cout << std::endl;
+            if (parsedInput.size() == 2) {
+                inventory.Find(stoi(parsedInput[1]));
+            }
+        }
+
         if (parsedInput[0] == "getlabel") {
+            std::cout << std::endl;
             if (parsedInput.size() == 3) {
-                inventory.GetLabel(stoi(parsedInput[1]), stoi(parsedInput[2]));
+                inventory.GetLabel(stoi(parsedInput[1]), stoi(parsedInput[2]), 0);
             } else if (parsedInput.size() == 4) {
                 inventory.GetLabel(stoi(parsedInput[1]), stoi(parsedInput[2]), stoi(parsedInput[3]));
             } else { std::cout << "Invalid Syntax." << std::endl; }

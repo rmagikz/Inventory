@@ -1,56 +1,13 @@
 #pragma once
 
 #include "Common.h"
+#include "Printing.h"
 
-using namespace DYMO_Label_Framework;
+void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
 
-void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print) {
-    std::fstream baseLabel;
-    std::fstream newLabel;
-    baseLabel.open("baseLabel.label", std::ios::in);
-    newLabel.open("newLabel.label", std::ios::out);
-    std::string line;
-    if (baseLabel.is_open()) {
-        while (std::getline(baseLabel, line)) {
-            if (line.find("<Text>") != std::string::npos) {
-                newLabel << "              <Text>" << categoryId << "-" << itemId << "</Text>\n";
-            }
-            else if (line.find("<String") != std::string::npos) {
-                newLabel << "                   <String xml:space=\"preserve\">" << catName << "</String>\n";
-            }
-            else { newLabel << line << "\n"; }
-        }
-        newLabel.close();
-        baseLabel.close();
-    }
+std::string AssignID(int count) { return std::to_string(count + 10000); }
 
-    std::cout << catName << std::endl;
-    std::cout << "ID: " << categoryId << "-" << itemId << std::endl;
-
-    if (print) {
-        std::cout << "PRINTING LABEL" << std::endl;
-        try
-        {
-            IFrameworkPtr framework(__uuidof(Framework));
-            ILabelPtr label = framework->OpenLabel(L"newLabel.label");
-            framework->PrintLabel(L"DYMO LabelWriter 450 Turbo", L"", label->SaveToXml(), L"");
-        }
-        catch (_com_error& e)
-        {
-            _tprintf_s(_T("Com error was \"%s\", HRESULT 0x%X\n"), e.ErrorMessage(), e.Error());
-        }
-    }
-}
-
-
-
-std::string AssignID(int count) {
-    return std::to_string(count + 10000);
-}
-
-enum Status {
-    Available, Sold, Deleted
-};
+enum Status { Available, Sold, Deleted };
 
 class Item {
 private:
@@ -64,6 +21,10 @@ private:
         for (int i = 0; i < 3; i++) {
             if (strcmp(m_status_names[i], status) == 0) { m_status = (Status)i; }
         }
+    }
+
+    std::string GetStatus() {
+        return m_status_names[m_status];
     }
 
     friend class Category;
@@ -110,6 +71,7 @@ private:
         for (int i = 0; i < items.size(); i++) {
             std::cout << "  - ID: " << items[i].m_id << " | " << items[i].m_status_names[items[i].m_status] << std::endl;
         }
+        std::cout << std::endl;
     }
 
     friend class Inventory;
@@ -131,7 +93,6 @@ private:
     }
 
     Category* FindCategoryName(const char* categoryName) {
-        std::cout << categoryName << std::endl;
         for (int i = 0; i < inventoryList.size(); i++) {
             if (inventoryList[i].m_name == categoryName) {
                 return &inventoryList[i];
@@ -150,7 +111,6 @@ public:
     }
 
     void CreateItem(const char* name, const int& cost) {
-        std::cout << name << std::endl;
         if (FindCategoryName(name)) return;
         inventoryList.push_back(Category(name, cost));
     }
@@ -171,10 +131,55 @@ public:
         }
     }
 
+    void ExportToExcel() {
+        std::fstream baseTable;
+        std::fstream newTable;
+        baseTable.open("baseTable.xml", std::ios::in);
+        newTable.open("newTable.xml", std::ios::out);
+        std::string line;
+        if (baseTable.is_open()) {
+            while (std::getline(baseTable, line)) {
+                if (line.find("</ss:Row>") != std::string::npos) {
+                    newTable << "</ss:Row>" << std::endl;
+                    for (int i = 0; i < inventoryList.size(); i++) {
+                        newTable << "<ss:Row>" << std::endl;
+                        newTable << "<ss:Cell><ss:Data ss:Type=\"Number\">" << inventoryList[i].m_id << "</ss:Data></ss:Cell>" << std::endl;
+                        newTable << "<ss:Cell><ss:Data ss:Type = \"String\"></ss:Data></ss:Cell>" << std::endl;
+                        newTable << "<ss:Cell><ss:Data ss:Type=\"String\">" << inventoryList[i].m_name << "</ss:Data></ss:Cell>" << std::endl;
+                        newTable << "<ss:Cell><ss:Data ss:Type=\"Number\">" << inventoryList[i].m_cost << "</ss:Data></ss:Cell>" << std::endl;
+                        newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
+                        newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
+                        newTable << "</ss:Row>" << std::endl;
+                        for (int j = 0; j < inventoryList[i].items.size(); j++) {
+                            newTable << "<ss:Row>" << std::endl;
+                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
+                            newTable << "<ss:Cell><ss:Data ss:Type=\"Number\">" << inventoryList[i].items[j].m_id << "</ss:Data></ss:Cell>" << std::endl;
+                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
+                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
+                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\">" << inventoryList[i].items[j].GetStatus() << "</ss:Data></ss:Cell>" << std::endl;
+                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
+                            newTable << "</ss:Row>" << std::endl;
+                        }
+                    }
+                    newTable << "</ss:Table>" << std::endl;
+                    newTable << "</ss:Worksheet>" << std::endl;
+                    newTable << "</ss:Workbook>" << std::endl;
+                    baseTable.close();
+                    newTable.close();
+                    break;
+                }
+                newTable << line << std::endl;
+            }
+        }
+    }
+
+    void Find(const int& categoryId) {
+        FindCategoryID(categoryId)->Display();
+    }
+
     void Display() {
         for (int i = 0; i < inventoryList.size(); i++) {
             inventoryList[i].Display();
-            std::cout << std::endl;
         }
     }
 };
@@ -185,10 +190,10 @@ public:
     *add items to inventory
     *change status of items
     *display full inventory
-    (current) assign unique identifier to item categories
-    (in progress) assign unique identifier to items within categories
-    generate labels for items
-    search items by label
-    generate excel file with full inventory
+    *assign unique identifier to item categories
+    *assign unique identifier to items within categories
+    *generate labels for items
+    *search items by label
+    *generate excel file with full inventory
     allow inventory counts
 */
