@@ -16,9 +16,29 @@ int main() {
         inventory.AddItem(i,3);
     }
 
-    inventory.ExportToExcel();
+    if (inventory.ExportToExcel()) {
+        std::cout << "Finished Exporting." << std::endl;
+    }
 
-    //INPUT
+    system("pause");
+}
+
+// FEATURES
+
+/*  *maintain inventory list
+    *add items to inventory
+    *change status of items
+    *display full inventory
+    (current) assign unique identifier to item categories
+    (in progress) assign unique identifier to items within categories
+    generate labels for items
+    search items by label
+    generate excel file with full inventory
+    allow inventory counts
+*/
+
+/*
+//INPUT
     std::cout << "Inventory Program\n\n";
     std::cout << "Please choose one\n\n";
     std::cout << "display       - display full inventory\n";
@@ -29,8 +49,7 @@ int main() {
     std::cout << "find        - find category\n";
     std::cout << "help          - get help for commands\n";
     std::cout << "exit          - exit program\n\n";
-
-    while (true) {
+while (true) {
         std::string input;
         std::getline(std::cin, input);
         std::stringstream stream(input);
@@ -92,20 +111,4 @@ int main() {
         }
 
         parsedInput = std::vector<std::string>();
-    }
-
-}
-
-// FEATURES
-
-/*  *maintain inventory list
-    *add items to inventory
-    *change status of items
-    *display full inventory
-    (current) assign unique identifier to item categories
-    (in progress) assign unique identifier to items within categories
-    generate labels for items
-    search items by label
-    generate excel file with full inventory
-    allow inventory counts
-*/
+    }*/

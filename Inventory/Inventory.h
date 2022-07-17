@@ -100,6 +100,55 @@ private:
         }
         return 0;
     }
+
+    std::string ExportString(const std::string& content = "", const std::string& type = "String") {
+        return "<ss:Cell><ss:Data ss:Type=\"" + type + "\">" + content + "</ss:Data></ss:Cell>";
+    }
+
+    bool ExportToExcelBase() {
+        std::fstream baseTable;
+        std::fstream newTable;
+        baseTable.open("baseTable.xml", std::ios::in);
+        newTable.open("newTable.xml", std::ios::out);
+        std::string line;
+        if (baseTable.is_open()) {
+            while (std::getline(baseTable, line)) {
+                if (line.find("</ss:Row>") != std::string::npos) {
+                    newTable << line << std::endl;
+                    for (int i = 0; i < inventoryList.size(); i++) {
+                        newTable
+                            << "<ss:Row>" << std::endl
+                            << ExportString(inventoryList[i].m_id, "Number") << std::endl
+                            << ExportString() << ExportString(inventoryList[i].m_name) << std::endl
+                            << ExportString(std::to_string(inventoryList[i].m_cost), "Number") << std::endl
+                            << ExportString() << std::endl
+                            << ExportString() << std::endl
+                            << "</ss:Row>" << std::endl;
+                        for (int j = 0; j < inventoryList[i].items.size(); j++) {
+                            newTable
+                                << "<ss:Row>" << std::endl
+                                << ExportString() << std::endl
+                                << ExportString(inventoryList[i].items[j].m_id, "Number") << std::endl
+                                << ExportString() << std::endl
+                                << ExportString() << std::endl
+                                << ExportString(inventoryList[i].items[j].GetStatus()) << std::endl
+                                << ExportString() << std::endl
+                                << "</ss:Row>" << std::endl;
+                        }
+                        newTable << "<ss:Row>" << ExportString() << "</ss:Row>";
+                    }
+                    newTable << "</ss:Table>";
+                    newTable << "</ss:Worksheet>";
+                    newTable << "</ss:Workbook>";
+                    baseTable.close();
+                    newTable.close();
+                    break;
+                }
+                newTable << line << std::endl;
+            }
+        }
+        return true;
+    }
 public:
     Inventory() {}
     Inventory(const int& count) { inventoryList.reserve(count); }
@@ -131,50 +180,12 @@ public:
         }
     }
 
-    void ExportToExcel() {
-        std::fstream baseTable;
-        std::fstream newTable;
-        baseTable.open("baseTable.xml", std::ios::in);
-        newTable.open("newTable.xml", std::ios::out);
-        std::string line;
-        if (baseTable.is_open()) {
-            while (std::getline(baseTable, line)) {
-                if (line.find("</ss:Row>") != std::string::npos) {
-                    newTable << "</ss:Row>" << std::endl;
-                    for (int i = 0; i < inventoryList.size(); i++) {
-                        newTable << "<ss:Row>" << std::endl;
-                        newTable << "<ss:Cell><ss:Data ss:Type=\"Number\">" << inventoryList[i].m_id << "</ss:Data></ss:Cell>" << std::endl;
-                        newTable << "<ss:Cell><ss:Data ss:Type = \"String\"></ss:Data></ss:Cell>" << std::endl;
-                        newTable << "<ss:Cell><ss:Data ss:Type=\"String\">" << inventoryList[i].m_name << "</ss:Data></ss:Cell>" << std::endl;
-                        newTable << "<ss:Cell><ss:Data ss:Type=\"Number\">" << inventoryList[i].m_cost << "</ss:Data></ss:Cell>" << std::endl;
-                        newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
-                        newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
-                        newTable << "</ss:Row>" << std::endl;
-                        for (int j = 0; j < inventoryList[i].items.size(); j++) {
-                            newTable << "<ss:Row>" << std::endl;
-                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
-                            newTable << "<ss:Cell><ss:Data ss:Type=\"Number\">" << inventoryList[i].items[j].m_id << "</ss:Data></ss:Cell>" << std::endl;
-                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
-                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
-                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\">" << inventoryList[i].items[j].GetStatus() << "</ss:Data></ss:Cell>" << std::endl;
-                            newTable << "<ss:Cell><ss:Data ss:Type=\"String\"></ss:Data></ss:Cell>" << std::endl;
-                            newTable << "</ss:Row>" << std::endl;
-                        }
-                    }
-                    newTable << "</ss:Table>" << std::endl;
-                    newTable << "</ss:Worksheet>" << std::endl;
-                    newTable << "</ss:Workbook>" << std::endl;
-                    baseTable.close();
-                    newTable.close();
-                    break;
-                }
-                newTable << line << std::endl;
-            }
-        }
-    }
-
     void Find(const int& categoryId) {
         FindCategoryID(categoryId)->Display();
+    }
+
+    bool ExportToExcel() {
+        return ExportToExcelBase();
     }
 
     void Display() {
