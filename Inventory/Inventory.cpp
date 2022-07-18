@@ -1,5 +1,28 @@
 #include "Common.h"
 #include "Inventory.h"
+#include <chrono>
+
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
+using std::chrono::milliseconds;
+
+double Benchmark1() {
+    std::vector<double> runs;
+
+    for (int i = 0; i < 100000; i++) {
+        auto t1 = high_resolution_clock::now();
+        auto t2 = high_resolution_clock::now();
+        duration<double, std::milli> ms_double = t2 - t1;
+        runs.push_back(ms_double.count());
+    }
+    double total = 0;
+    for (int i = 0; i < runs.size(); i++) {
+        total += runs[i];
+    }
+
+    return total / runs.size();
+}
 
 int main() {
     CoInitialize(NULL);
@@ -11,15 +34,35 @@ int main() {
     inventory.CreateItem("iphone 11 pro max screen/lcd", 399);
     inventory.CreateItem("iphone 8+ screen/lcd", 99);
     inventory.CreateItem("ipad 10.2 (7th gen) glass", 169);
+    inventory.CreateItem("1", 169);
+    inventory.CreateItem("2", 169);
+    inventory.CreateItem("3", 169);
+    inventory.CreateItem("4", 169);
+    inventory.CreateItem("5", 169);
+    inventory.CreateItem("6", 169);
+    inventory.CreateItem("7", 169);
+    inventory.CreateItem("8", 169);
+    inventory.CreateItem("9", 169);
+    inventory.CreateItem("10", 169);
+    inventory.CreateItem("11", 169);
+    inventory.CreateItem("12", 169);
+    inventory.CreateItem("13", 169);
+    inventory.CreateItem("14", 169);
+    inventory.CreateItem("15", 169);
+    inventory.CreateItem("16", 169);
+    inventory.CreateItem("17", 169);
+    inventory.CreateItem("18", 169);
+    inventory.CreateItem("19", 169);
+    inventory.CreateItem("20", 169);
 
-    for (int i = 10001; i < 10005; i++) {
-        inventory.AddItem(i,3);
+    for (int i = 10001; i < 10025; i++) {
+        inventory.AddItem(i,60);
     }
 
-    if (inventory.ExportToExcel()) {
-        std::cout << "Finished Exporting." << std::endl;
-    }
+    inventory.Display();
+    inventory.ExportToExcel();
 
+  
     system("pause");
 }
 

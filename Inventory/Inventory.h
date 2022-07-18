@@ -3,9 +3,12 @@
 #include "Common.h"
 #include "Printing.h"
 
+
 void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
 
 std::string AssignID(int count) { return std::to_string(count + 10000); }
+
+
 
 enum Status { Available, Sold, Deleted };
 
@@ -46,9 +49,19 @@ private:
     }
 
     Item* FindItemID(const int& itemId) {
-        for (int i = 0; i < items.size(); i++) {
-            if (std::stoi(items[i].m_id) == itemId) {
-                return &items[i];
+        int left = 0;
+        int right = items.size();
+
+        while (left < right) {
+            int mid = left + ((right - left) / 2);
+            if (std::stoi(items[mid].m_id) == itemId) {
+                return &items[mid];
+            }
+            else if (itemId < std::stoi(items[mid].m_id)) {
+                right = mid;
+            }
+            else if (itemId > std::stoi(items[mid].m_id)) {
+                left = mid;
             }
         }
         return NULL;
@@ -59,12 +72,10 @@ private:
     }
 
     void SetStatus(const int& itemId, const char* status) {
-        if (Item* item = FindItemID(itemId)) { item->SetStatus(status); }
+        if (Item* item = FindItemID(itemId)) item->SetStatus(status);
     }
 
-    void SetCost(const int& cost) {
-        m_cost = cost;
-    }
+    void SetCost(const int& cost) { m_cost = cost; }
 
     void Display() {
         std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << std::endl;
@@ -82,15 +93,27 @@ int Category::count = 1;
 class Inventory {
 private:
     std::vector<Category> inventoryList;
+    int m_count;
 
     Category* FindCategoryID(const int& categoryId) {
-        for (int i = 0; i < inventoryList.size(); i++) {
-            if (std::stoi(inventoryList[i].m_id) == categoryId) {
-                return &inventoryList[i];
+        int left = 0;
+        int right = inventoryList.size();
+
+        while (left < right) {
+            int mid = left + ((right - left) / 2);
+            if (std::stoi(inventoryList[mid].m_id) == categoryId) {
+                return &inventoryList[mid];
+            }
+            else if (categoryId < std::stoi(inventoryList[mid].m_id)) {
+                right = mid;
+            }
+            else if (categoryId > std::stoi(inventoryList[mid].m_id)) {
+                left = mid;
             }
         }
-        return 0;
+        return NULL;
     }
+
 
     Category* FindCategoryName(const char* categoryName) {
         for (int i = 0; i < inventoryList.size(); i++) {
@@ -150,18 +173,20 @@ private:
         return true;
     }
 public:
-    Inventory() {}
-    Inventory(const int& count) { inventoryList.reserve(count); }
+    Inventory() : m_count(0) {}
+    Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
 
     void AddItem(const int& categoryId, const int& count = 1) {
         for (int i = 0; i < count; i++) {
             FindCategoryID(categoryId)->AddItem();
+            m_count++;
         }
     }
 
     void CreateItem(const char* name, const int& cost) {
         if (FindCategoryName(name)) return;
         inventoryList.push_back(Category(name, cost));
+        m_count++;
     }
 
     void SetStatus(const int& categoryId, const int& itemId, const char* status) {
@@ -186,6 +211,26 @@ public:
 
     bool ExportToExcel() {
         return ExportToExcelBase();
+    }
+
+    void StartCount() {
+        int counted = 0;
+        std::string input;
+        while (true) {
+            std::cout << "Counted: " << counted << " | Expected: " << m_count << " | Variance : " << counted - m_count << std::endl;
+            std::getline(std::cin, input);
+            if (input == "exit") break;
+            int categoryId = stoi(input.substr(0,input.find("-")));
+            int itemId = stoi(input.substr(input.find("-")+1, input.length()));
+            if (Category* category = FindCategoryID(categoryId)) {
+                if (category->FindItemID(itemId)) {
+                    std::cout << "Counted." << std::endl;
+                    counted++;
+                }
+            }
+            else std::cout << "Item does not belong in inventory." << std::endl;
+        }
+        std::cout << "exited" << std::endl;
     }
 
     void Display() {
