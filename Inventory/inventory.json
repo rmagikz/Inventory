@@ -1,0 +1,80 @@
+{
+	"Inventory" : [
+		{
+			"Name" : "iphone x screen/lcd",
+			"ID" : "10001",
+			"Cost" : 179,
+			"Items" : [
+				{
+					"ID" : "10001",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10002",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10003",
+					"Status" : "Available"
+				}
+			]
+		},
+		{
+			"Name" : "iphone 11 pro max screen/lcd",
+			"ID" : "10002",
+			"Cost" : 399,
+			"Items" : [
+				{
+					"ID" : "10001",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10002",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10003",
+					"Status" : "Available"
+				}
+			]
+		},
+		{
+			"Name" : "iphone 8+ screen/lcd",
+			"ID" : "10003",
+			"Cost" : 99,
+			"Items" : [
+				{
+					"ID" : "10001",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10002",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10003",
+					"Status" : "Available"
+				}
+			]
+		},
+		{
+			"Name" : "ipad 10.2 (7th gen) glass",
+			"ID" : "10004",
+			"Cost" : 169,
+			"Items" : [
+				{
+					"ID" : "10001",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10002",
+					"Status" : "Available"
+				},
+				{
+					"ID" : "10003",
+					"Status" : "Available"
+				}
+			]
+		}
+	]
+}

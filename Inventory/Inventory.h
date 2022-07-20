@@ -2,98 +2,17 @@
 
 #include "Common.h"
 #include "Printing.h"
-
+#include "Item.h"
+#include "Category.h"
+#include "Exports.h"
 
 void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
-
-std::string AssignID(int count) { return std::to_string(count + 10000); }
-
-
-
-enum Status { Available, Sold, Deleted };
-
-class Item {
-private:
-    const char* m_status_names[3] = { "Available", "Sold", "Deleted" };
-    Status m_status;
-    std::string m_id;
-
-    Item(int id) : m_status(Available), m_id(AssignID(id)) {}
-
-    void SetStatus(const char* status) {
-        for (int i = 0; i < 3; i++) {
-            if (strcmp(m_status_names[i], status) == 0) { m_status = (Status)i; }
-        }
-    }
-
-    std::string GetStatus() {
-        return m_status_names[m_status];
-    }
-
-    friend class Category;
-    friend class Inventory;
-};
-
-class Category {
-private:
-    std::vector<Item> items;
-    static int count;
-    std::string m_id;
-    std::string m_name;
-    int m_cost;
-
-    Category(const char* name, const int& cost)
-        : m_id(AssignID(count)), m_name(name), m_cost(cost) {
-        count++;
-        items.push_back(Item(items.size()+1));
-    }
-
-    Item* FindItemID(const int& itemId) {
-        int left = 0;
-        int right = items.size();
-
-        while (left < right) {
-            int mid = left + ((right - left) / 2);
-            if (std::stoi(items[mid].m_id) == itemId) {
-                return &items[mid];
-            }
-            else if (itemId < std::stoi(items[mid].m_id)) {
-                right = mid;
-            }
-            else if (itemId > std::stoi(items[mid].m_id)) {
-                left = mid;
-            }
-        }
-        return NULL;
-    }
-
-    void AddItem() {
-        items.push_back(Item(items.size()+1));
-    }
-
-    void SetStatus(const int& itemId, const char* status) {
-        if (Item* item = FindItemID(itemId)) item->SetStatus(status);
-    }
-
-    void SetCost(const int& cost) { m_cost = cost; }
-
-    void Display() {
-        std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << std::endl;
-        for (int i = 0; i < items.size(); i++) {
-            std::cout << "  - ID: " << items[i].m_id << " | " << items[i].m_status_names[items[i].m_status] << std::endl;
-        }
-        std::cout << std::endl;
-    }
-
-    friend class Inventory;
-};
-
-int Category::count = 1;
 
 class Inventory {
 private:
     std::vector<Category> inventoryList;
     int m_count;
+    Exports exporter;
 
     Category* FindCategoryID(const int& categoryId) {
         int left = 0;
@@ -125,53 +44,55 @@ private:
     }
 
     std::string ExportString(const std::string& content = "", const std::string& type = "String") {
-        return "<ss:Cell><ss:Data ss:Type=\"" + type + "\">" + content + "</ss:Data></ss:Cell>";
+        return "<ss:Cell><ss:Data ss:Type=\"" + type + "\">" + content + "</ss:Data></ss:Cell>\n";
     }
 
-    bool ExportToExcelBase() {
-        std::fstream baseTable;
-        std::fstream newTable;
-        baseTable.open("baseTable.xml", std::ios::in);
-        newTable.open("newTable.xml", std::ios::out);
-        std::string line;
-        if (baseTable.is_open()) {
-            while (std::getline(baseTable, line)) {
-                if (line.find("</ss:Row>") != std::string::npos) {
-                    newTable << line << std::endl;
-                    for (int i = 0; i < inventoryList.size(); i++) {
-                        newTable
-                            << "<ss:Row>" << std::endl
-                            << ExportString(inventoryList[i].m_id, "Number") << std::endl
-                            << ExportString() << ExportString(inventoryList[i].m_name) << std::endl
-                            << ExportString(std::to_string(inventoryList[i].m_cost), "Number") << std::endl
-                            << ExportString() << std::endl
-                            << ExportString() << std::endl
-                            << "</ss:Row>" << std::endl;
-                        for (int j = 0; j < inventoryList[i].items.size(); j++) {
-                            newTable
-                                << "<ss:Row>" << std::endl
-                                << ExportString() << std::endl
-                                << ExportString(inventoryList[i].items[j].m_id, "Number") << std::endl
-                                << ExportString() << std::endl
-                                << ExportString() << std::endl
-                                << ExportString(inventoryList[i].items[j].GetStatus()) << std::endl
-                                << ExportString() << std::endl
-                                << "</ss:Row>" << std::endl;
-                        }
-                        newTable << "<ss:Row>" << ExportString() << "</ss:Row>";
-                    }
-                    newTable << "</ss:Table>";
-                    newTable << "</ss:Worksheet>";
-                    newTable << "</ss:Workbook>";
-                    baseTable.close();
-                    newTable.close();
-                    break;
-                }
-                newTable << line << std::endl;
-            }
-        }
-        return true;
+    void ExportCategory(std::fstream& newTable, Category& category) {
+        newTable
+            << "<ss:Row>"
+            << ExportString(category.m_id, "Number")
+            << ExportString() << ExportString(category.m_name)
+            << ExportString(std::to_string(category.m_cost), "Number")
+            << ExportString()
+            << ExportString()
+            << "</ss:Row>";
     }
+
+    void ExportItem(std::fstream& newTable, Item& item) {
+        newTable
+            << "<ss:Row>"
+            << ExportString()
+            << ExportString(item.m_id, "Number")
+            << ExportString()
+            << ExportString()
+            << ExportString(item.GetStatus())
+            << ExportString()
+            << "</ss:Row>";
+    }
+
+    void WriteToFile(std::fstream& baseTable, std::fstream& newTable) {
+        std::string line;
+        while (std::getline(baseTable, line)) {
+            if (line.find("</ss:Row>") != std::string::npos) {
+                newTable << line << std::endl;
+                for (int i = 0; i < inventoryList.size(); i++) {
+                    ExportCategory(newTable, inventoryList[i]);
+                    for (int j = 0; j < inventoryList[i].items.size(); j++) {
+                        ExportItem(newTable, inventoryList[i].items[j]);
+                    }
+                    newTable << "<ss:Row>" << ExportString() << "</ss:Row>";
+                }
+                newTable << "</ss:Table>";
+                newTable << "</ss:Worksheet>";
+                newTable << "</ss:Workbook>";
+                baseTable.close();
+                newTable.close();
+                break;
+            }
+            newTable << line << std::endl;
+        }
+    }
+
 public:
     Inventory() : m_count(0) {}
     Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
@@ -209,8 +130,12 @@ public:
         FindCategoryID(categoryId)->Display();
     }
 
-    bool ExportToExcel() {
-        return ExportToExcelBase();
+    void ExportToExcel() {
+        exporter.ExportToExcel(inventoryList);
+    }
+
+    void ExportToJSON() {
+        exporter.ExportToJSON(inventoryList);
     }
 
     void StartCount() {
@@ -220,17 +145,22 @@ public:
             std::cout << "Counted: " << counted << " | Expected: " << m_count << " | Variance : " << counted - m_count << std::endl;
             std::getline(std::cin, input);
             if (input == "exit") break;
-            int categoryId = stoi(input.substr(0,input.find("-")));
-            int itemId = stoi(input.substr(input.find("-")+1, input.length()));
-            if (Category* category = FindCategoryID(categoryId)) {
-                if (category->FindItemID(itemId)) {
-                    std::cout << "Counted." << std::endl;
-                    counted++;
+            try {
+                int categoryId = stoi(input.substr(0, input.find("-")));
+                int itemId = stoi(input.substr(input.find("-") + 1, input.length()));
+                if (Category* category = FindCategoryID(categoryId)) {
+                    if (category->FindItemID(itemId)) {
+                        std::cout << "Counted." << std::endl;
+                        counted++;
+                    }
                 }
+                else std::cout << "Item does not belong in inventory." << std::endl;
             }
-            else std::cout << "Item does not belong in inventory." << std::endl;
+            catch (...) {
+                std::cout << "Invalid input." << std::endl;
+            }
         }
-        std::cout << "exited" << std::endl;
+        std::cout << "Exited." << std::endl;
     }
 
     void Display() {
@@ -239,17 +169,3 @@ public:
         }
     }
 };
-
-// FEATURES
-
-/*  *maintain inventory list
-    *add items to inventory
-    *change status of items
-    *display full inventory
-    *assign unique identifier to item categories
-    *assign unique identifier to items within categories
-    *generate labels for items
-    *search items by label
-    *generate excel file with full inventory
-    allow inventory counts
-*/
