@@ -33,5 +33,5 @@ int main() {
     *generate labels for items
     *search items by label
     *generate excel file with full inventory
-    allow inventory counts
+    *allow inventory counts
 */
