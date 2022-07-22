@@ -14,10 +14,10 @@ private:
     void LoadCategory(std::string& payload, Category& category) {
         payload
             += "<ss:Row>"
-            + ExportLine(category.m_id, "Number")
+            + ExportLine(category.GetId(), "Number")
             + ExportLine()
-            + ExportLine(category.m_name)
-            + ExportLine(std::to_string(category.m_cost), "Number")
+            + ExportLine(category.GetName())
+            + ExportLine(std::to_string(category.GetCost()), "Number")
             + ExportLine()
             + ExportLine()
             + "</ss:Row>";
@@ -27,7 +27,7 @@ private:
         payload
             += "<ss:Row>"
             + ExportLine()
-            + ExportLine(item.m_id, "Number")
+            + ExportLine(item.GetId(), "Number")
             + ExportLine()
             + ExportLine()
             + ExportLine(item.GetStatus())
@@ -39,8 +39,8 @@ private:
         std::string payload;
         for (int i = 0; i < inventoryList.size(); i++) {
             LoadCategory(payload, inventoryList[i]);
-            for (int j = 0; j < inventoryList[i].items.size(); j++) {
-                LoadItem(payload, inventoryList[i].items[j]);
+            for (int j = 0; j < inventoryList[i].GetItems()->size(); j++) {
+                LoadItem(payload, (*inventoryList[i].GetItems())[j]);
             }
             payload += "<ss:Row>" + ExportLine() + "</ss:Row>";
         }
@@ -62,14 +62,15 @@ private:
         return ToJsonString(key) + " : " + ToJsonString(value);
     }
     
-    std::string JsonItem(const std::string& key, std::vector<Item>& items) {
+    std::string JsonItem(const std::string& key, std::vector<Item>& m_items) {
         std::string result;
         result += ToJsonString(key) + " : [\n";
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < m_items.size(); i++) {
             result += "\t\t\t\t{\n";
-            result += "\t\t\t\t\t" + JsonString("ID", items[i].m_id) + ",\n";
-            result += "\t\t\t\t\t" + JsonString("Status", items[i].GetStatus()) + "\n";
-            if (i == items.size() - 1) { result += "\t\t\t\t}\n"; }
+            result += "\t\t\t\t\t" + JsonString("ID", m_items[i].GetId()) + ",\n";
+            result += "\t\t\t\t\t" + JsonString("Status", m_items[i].GetStatus()) + ",\n";
+            result += "\t\t\t\t\t" + JsonString("Last Counted", m_items[i].GetLastCounted()) + "\n";
+            if (i == m_items.size() - 1) { result += "\t\t\t\t}\n"; }
             else { result += "\t\t\t\t},\n"; }
         }
         result += "\t\t\t]\n";
@@ -82,10 +83,10 @@ private:
         payload += "\t" + ToJsonString("Inventory") + " : [\n";
         for (int i = 0; i < inventoryList.size(); i++) {
             payload += "\t\t{\n";
-            payload += "\t\t\t" + JsonString("Name", inventoryList[i].m_name) + ",\n";
-            payload += "\t\t\t" +JsonString("ID", inventoryList[i].m_id) + ",\n";
-            payload += "\t\t\t" + JsonNumber("Cost", inventoryList[i].m_cost) + ",\n";
-            payload += "\t\t\t" + JsonItem("Items", inventoryList[i].items);
+            payload += "\t\t\t" + JsonString("Name", inventoryList[i].GetName()) + ",\n";
+            payload += "\t\t\t" +JsonString("ID", inventoryList[i].GetId()) + ",\n";
+            payload += "\t\t\t" + JsonNumber("Cost", inventoryList[i].GetCost()) + ",\n";
+            payload += "\t\t\t" + JsonItem("Items", (*inventoryList[i].GetItems()));
             if (i == inventoryList.size() -1) { payload += "\t\t}\n"; }
             else { payload += "\t\t},\n"; }
         }
@@ -93,7 +94,7 @@ private:
         return payload;
     }
 public:
-	Exports() {}
+    Exports() {}
 
 	void ExportToExcel(std::vector<Category>& inventory) {
         std::fstream baseTable;

@@ -22,3 +22,5 @@
 #import "DYMO.Label.Framework.tlb" rename("CreateFont", "CreateFont_")
 
 std::string AssignID(int count) { return std::to_string(count + 10000); }
+
+void GetInput(std::string& buff) { std::getline(std::cin, buff); }

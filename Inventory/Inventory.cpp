@@ -17,8 +17,10 @@ int main() {
     }
 
     inventory.Display();
-    //inventory.StartCount();
-    inventory.ExportToJSON();
+
+    inventory.StartCount();
+    inventory.StartCount();
+    inventory.DisplayCounts();
   
     system("pause");
 }
