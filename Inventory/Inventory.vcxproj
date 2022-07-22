@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="Category.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Count.h" />
     <ClInclude Include="Exports.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />

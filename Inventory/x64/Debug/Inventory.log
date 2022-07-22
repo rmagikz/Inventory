@@ -1,5 +1,6 @@
 ﻿  Inventory.cpp
 C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Category.h(21,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Category.h(39,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Inventory.h(67,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Count.h(36,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\abrif\Documents\Projects\Github\Inventory\Inventory\Inventory.h(21,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   Inventory.vcxproj -> C:\Users\abrif\Documents\Projects\Github\Inventory\x64\Debug\Inventory.exe

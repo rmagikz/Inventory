@@ -20,21 +20,13 @@ private:
         }
     }
 public:
-    std::string GetStatus() {
-        return m_status_names[m_status];
+    Item& operator=(Item& other) {
+        return *this;
     }
-
-    std::string GetId() {
-        return m_id;
-    }
-
-    int GetUUID() {
-        return m_uuid;
-    }
-
-    std::string GetLastCounted() {
-        return m_lastCounted;
-    }
+    std::string GetStatus() { return m_status_names[m_status]; }
+    std::string GetId() { return m_id; }
+    std::string GetLastCounted() { return m_lastCounted; }
+    int GetUUID() { return m_uuid; }
 
     friend class Category;
 };
