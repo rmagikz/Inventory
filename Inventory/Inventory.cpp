@@ -18,6 +18,9 @@ int main() {
 
     inventory.Display();
     inventory.StartCount();
+    inventory.StartCount();
+
+    inventory.DisplayCounts(1);
   
     system("pause");
 }

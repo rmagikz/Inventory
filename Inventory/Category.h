@@ -36,7 +36,7 @@ private:
     }
     
     void AddItem(const int& uuid) {
-        m_items.push_back(Item(m_items.size() + 1, uuid));
+        m_items.push_back(Item(m_name,m_items.size() + 1, uuid));
     }
 
     void SetStatus(const int& itemId, const char* status) {
@@ -52,11 +52,11 @@ private:
     }
 
     void Display() {
-        std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << std::endl;
+        std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << "\n";
         for (int i = 0; i < m_items.size(); i++) {
-            std::cout << "  - ID: " << m_items[i].m_id << " | " << m_items[i].GetStatus() << " | Last Counted: " << m_items[i].m_lastCounted << " | UUID: " << m_items[i].m_uuid << std::endl;
+            std::cout << "  - ID: " << m_items[i].m_id << " | " << m_items[i].GetStatus() << " | Last Counted: " << m_items[i].m_lastCounted << " | UUID: " << m_items[i].m_uuid << "\n";
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
 public:
     std::vector<Item>* GetItems() {

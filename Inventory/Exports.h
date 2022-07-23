@@ -105,12 +105,12 @@ public:
             std::string line;
             while (std::getline(baseTable, line)) {
                 if (line.find("</ss:Row>") != std::string::npos) {
-                    newTable << line << std::endl;
+                    newTable << line << "\n";
                     newTable << ExcelPayload(inventory);
                     break;
                 }
             }
-            newTable << line << std::endl;
+            newTable << line << "\n";
             baseTable.close();
             newTable.close();
         }

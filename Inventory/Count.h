@@ -14,20 +14,26 @@ public:
     bool m_finished;
 
     Count() : m_counted(0), m_total(0), m_variance(0), m_finished(false) {}
+
     void Display() {
         std::cout << "Opened: " << m_dateOpened << " | Closed: "
             << m_dateClosed << " | Counted: " << m_counted << " | Total: "
-            << m_total << " | Variance: " << m_variance << std::endl;
+            << m_total << " | Variance: " << m_variance << "\n";
     }
 
     void Status() {
-        std::cout << "Counted: " << m_counted << " | Expected: " << m_total << " | Variance : " << m_counted - m_total << std::endl;
+        std::cout << "Counted: " << m_counted << " | Expected: " << m_total << " | Variance : " << m_counted - m_total << "\n";
     }
 
     void DisplayItems() {
         for (int i = 0; i < m_items.size(); i++) {
-            std::cout << "  -" << m_items[i].GetId() << " | " << m_items[i].GetStatus() << " | " << m_items[i].GetLastCounted() << std::endl;
+            std::cout << "  -"
+                << m_items[i].GetParentName()
+                << " | " << m_items[i].GetId() << " | "
+                << m_items[i].GetStatus() << " | "
+                << m_items[i].GetLastCounted() << "\n";
         }
+        std::cout << "\n";
     }
 
     bool Exists(const int& uuid) {

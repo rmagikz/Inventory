@@ -13,8 +13,8 @@ class Inventory {
 private:
     std::vector<Count> inventoryCounts;
     std::vector<Category> inventoryList;
-    int m_count;
     Exports exporter;
+    int m_count;
 
     Category* FindCategoryID(const int& categoryId) {
         int left = 0;
@@ -47,7 +47,7 @@ private:
 
     void SetupCount(Count& count) {
         if (inventoryCounts.size() > 0 && !inventoryCounts.back().m_finished) {
-            std::cout << "Resuming latest count.\nTo open new count please close this one out first by using \"close\"" << std::endl;
+            std::cout << "Resuming latest count.\nTo open new count please close this one out first by using \"close\"\n";
             count = inventoryCounts.back();
             inventoryCounts.pop_back();
         }
@@ -104,8 +104,6 @@ public:
         exporter.ExportToJSON(inventoryList);
     }
 
-    
-
     void StartCount() {
         Count count;
         SetupCount(count);
@@ -121,7 +119,7 @@ public:
                 if (Category* category = FindCategoryID(categoryId)) {
                     if (Item* item = category->FindItemID(itemId)) {
                         if (count.Exists(item->GetUUID())) {
-                            std::cout << "Already Counted." << std::endl;
+                            std::cout << "Already Counted.\n";
                             continue;
                         }
                         category->SetLastCounted(itemId, "Today");
@@ -130,18 +128,16 @@ public:
                         continue;
                     }
                 }
-                std::cout << "Item does not belong in inventory." << std::endl;
+                std::cout << "Item does not belong in inventory.\n";
             }
             catch (...) {
-                std::cout << "Invalid input." << std::endl;
+                std::cout << "Invalid input.\n";
             }
         }
         count.m_variance = count.m_counted - m_count;
         inventoryCounts.push_back(count);
-        std::cout << "Exited." << std::endl;
-        std::cout << std::endl;
-        count.Display();
-        count.DisplayItems();
+        std::cout << "Exited.\n";
+        std::cout << "\n";
     }
 
     void Display() {
@@ -150,9 +146,10 @@ public:
         }
     }
 
-    void DisplayCounts() {
+    void DisplayCounts(bool extra) {
         for (int i = 0; i < inventoryCounts.size(); i++) {
             inventoryCounts[i].Display();
+            if (extra) inventoryCounts[i].DisplayItems();
         }
     }
 };
