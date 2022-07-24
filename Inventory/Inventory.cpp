@@ -21,6 +21,8 @@ int main() {
     inventory.StartCount();
 
     inventory.DisplayCounts(1);
+    inventory.ExportToExcel();
+    inventory.ExportToJSON();
   
     system("pause");
 }

@@ -35,7 +35,7 @@ private:
             + "</ss:Row>";
     }
 
-    std::string ExcelPayload(std::vector<Category> inventoryList) {
+    std::string ExcelPayload(std::vector<Category>& inventoryList) {
         std::string payload;
         for (int i = 0; i < inventoryList.size(); i++) {
             LoadCategory(payload, inventoryList[i]);

@@ -13,7 +13,7 @@ private:
     Status m_status;
     std::string m_lastCounted;
 
-    Item(std::string& parentName, int id, int uuid) 
+    Item(const std::string& parentName, const int& id, const int& uuid) 
         : m_id(AssignID(id)), m_uuid(uuid), m_status(Available), m_lastCounted("Never"), m_parentName(parentName) {}
 
     void SetStatus(const char* status) {

@@ -146,7 +146,7 @@ public:
         }
     }
 
-    void DisplayCounts(bool extra) {
+    void DisplayCounts(const bool& extra) {
         for (int i = 0; i < inventoryCounts.size(); i++) {
             inventoryCounts[i].Display();
             if (extra) inventoryCounts[i].DisplayItems();
