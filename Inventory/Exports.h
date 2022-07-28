@@ -76,7 +76,7 @@ private:
         result += "\t\t\t]\n";
         return result;
     }
-
+public:
     std::string JsonPayload(std::vector<Category>& inventoryList) {
         std::string payload;
         payload += "{\n";
@@ -93,7 +93,7 @@ private:
         payload += "\t]\n}";
         return payload;
     }
-public:
+
     Exports() {}
 
 	void ExportToExcel(std::vector<Category>& inventory) {

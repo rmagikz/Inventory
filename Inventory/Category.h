@@ -7,8 +7,8 @@ class Category {
 private:
     std::vector<Item> m_items;
     static int count;
-    std::string m_id;
-    std::string m_name;
+    const std::string m_id;
+    const char* m_name;
     int m_cost;
 
     Category(const char* name, const int& cost)
@@ -54,7 +54,7 @@ private:
     void Display() {
         std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << "\n";
         for (int i = 0; i < m_items.size(); i++) {
-            std::cout << "  - ID: " << m_items[i].m_id << " | " << m_items[i].GetStatus() << " | Last Counted: " << m_items[i].m_lastCounted << " | UUID: " << m_items[i].m_uuid << "\n";
+            std::cout << "  - ID: " << m_items[i].m_id << " | Added: " << m_items[i].m_dateAdded << " | " << m_items[i].GetStatus() << "\n";
         }
         std::cout << "\n";
     }

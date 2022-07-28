@@ -30,8 +30,7 @@ public:
             std::cout << "  -"
                 << m_items[i].GetParentName()
                 << " | " << m_items[i].GetId() << " | "
-                << m_items[i].GetStatus() << " | "
-                << m_items[i].GetLastCounted() << "\n";
+                << m_items[i].GetStatus() << "\n";
         }
         std::cout << "\n";
     }

@@ -5,6 +5,7 @@ int main() {
     CoInitialize(NULL);
 
     //SETUP
+    //DBHandler handler;
     Inventory inventory;
 
     inventory.CreateItem("iphone x screen/lcd", 179);
@@ -16,13 +17,15 @@ int main() {
         inventory.AddItem(i,2);
     }
 
-    inventory.Display();
-    inventory.StartCount();
-    inventory.StartCount();
+    inventory.Save();
 
-    inventory.DisplayCounts(1);
-    inventory.ExportToExcel();
-    inventory.ExportToJSON();
+    inventory.Display();
+    //inventory.StartCount();
+    //inventory.StartCount();
+
+    //inventory.DisplayCounts(1);
+    //inventory.ExportToExcel();
+    //inventory.ExportToJSON();
   
     system("pause");
 }

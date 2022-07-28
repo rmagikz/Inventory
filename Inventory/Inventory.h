@@ -9,11 +9,34 @@
 
 void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
 
+class DBHandler {
+private:
+    mongocxx::instance m_inst;
+    mongocxx::uri m_uri;
+    mongocxx::client m_client;
+    mongocxx::collection m_collection;
+public:
+    DBHandler(const char* uri, const char* db, const char* collection) 
+        : m_uri(uri), m_client(m_uri), m_collection(m_client[db][collection]) {
+
+    }
+
+    void Save(std::string json) {
+        m_collection.insert_one(bsoncxx::from_json(json).view());
+        std::cout << "saved" << std::endl;
+    }
+
+    void Load() {
+
+    }
+};
+
 class Inventory {
 private:
     std::vector<Count> inventoryCounts;
     std::vector<Category> inventoryList;
     Exports exporter;
+    DBHandler db_handler;
     int m_count;
 
     Category* FindCategoryID(const int& categoryId) {
@@ -52,14 +75,14 @@ private:
             inventoryCounts.pop_back();
         }
         else {
-            count.m_dateOpened = "TODAY";
+            count.m_dateOpened = __DATE__;
             count.m_total = m_count;
             count.Display();
         }
     }
 public:
-    Inventory() : m_count(0) {}
-    Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
+    Inventory() : m_count(0), db_handler("mongodb+srv://<username>:<password>@inv0.kwfwq.mongodb.net/?retryWrites=true&w=majority","inventory","inv0") {}
+    //Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
 
     void AddItem(const int& categoryId, const int& count = 1) {
         for (int i = 0; i < count; i++) {
@@ -111,7 +134,7 @@ public:
         while (true) {
             std::getline(std::cin, input);
             if (input == "exit") { count.m_finished = false; break; }
-            if (input == "close") { count.m_dateClosed = "TODAY"; count.m_finished = true; break; }
+            if (input == "close") { count.m_dateClosed = __DATE__; count.m_finished = true; break; }
             if (input == "status") { count.Status(); continue; }
             try {
                 int categoryId = stoi(input.substr(0, input.find("-")));
@@ -122,7 +145,7 @@ public:
                             std::cout << "Already Counted.\n";
                             continue;
                         }
-                        category->SetLastCounted(itemId, "Today");
+                        category->SetLastCounted(itemId, __DATE__);
                         count.m_items.push_back((*item));
                         count.m_counted++;
                         continue;
@@ -152,4 +175,10 @@ public:
             if (extra) inventoryCounts[i].DisplayItems();
         }
     }
+
+    void Save() {
+        db_handler.Save(exporter.JsonPayload(inventoryList));
+    }
 };
+
+

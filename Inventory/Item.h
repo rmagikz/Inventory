@@ -8,13 +8,14 @@ class Item {
 private:
     const char* m_status_names[3] = { "Available", "Sold", "Deleted" };
     const std::string m_id;
-    const std::string m_parentName;
     const int m_uuid;
-    Status m_status;
+    const char* m_dateAdded;
+    const char* m_parentName;
     std::string m_lastCounted;
+    Status m_status;
 
-    Item(const std::string& parentName, const int& id, const int& uuid) 
-        : m_id(AssignID(id)), m_uuid(uuid), m_status(Available), m_lastCounted("Never"), m_parentName(parentName) {}
+    Item(const char* parentName, const int& id, const int& uuid) 
+        : m_id(AssignID(id)), m_uuid(uuid), m_dateAdded(__DATE__), m_parentName(parentName), m_lastCounted("Never"), m_status(Available) {}
 
     void SetStatus(const char* status) {
         for (int i = 0; i < 3; i++) {
