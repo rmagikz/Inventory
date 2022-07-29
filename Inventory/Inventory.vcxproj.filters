@@ -44,5 +44,8 @@
     <ClInclude Include="Count.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DBHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

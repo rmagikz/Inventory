@@ -39,16 +39,18 @@ private:
         m_items.push_back(Item(m_name,m_items.size() + 1, uuid));
     }
 
-    void SetStatus(const int& itemId, const char* status) {
-        if (Item* item = FindItemID(itemId)) item->SetStatus(status);
-    }
-
-    void SetLastCounted(const int& itemId, const char* lastCounted) {
-        if (Item* item = FindItemID(itemId)) item->m_lastCounted = lastCounted;
-    }
-
     void SetCost(const int& cost) {
         m_cost = cost;
+    }
+
+    bool SetStatus(const int& itemId, const char* status) {
+        if (Item* item = FindItemID(itemId)) { item->SetStatus(status); return true; }
+        return false;
+    }
+
+    bool SetLastCounted(const int& itemId, const char* lastCounted) {
+        if (Item* item = FindItemID(itemId)) { item->m_lastCounted = lastCounted; return true; }
+        return false;
     }
 
     void Display() {
@@ -59,21 +61,10 @@ private:
         std::cout << "\n";
     }
 public:
-    std::vector<Item>* GetItems() {
-        return &m_items;
-    }
-
-    std::string GetId() {
-        return m_id;
-    }
-
-    std::string GetName() {
-        return m_name;
-    }
-
-    int GetCost() {
-        return m_cost;
-    }
+    std::vector<Item>* GetItems() { return &m_items; }
+    std::string GetId() { return m_id; }
+    std::string GetName() { return m_name; }
+    int GetCost() { return m_cost; }
 
     friend class Inventory;
 };

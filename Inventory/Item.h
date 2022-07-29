@@ -17,10 +17,11 @@ private:
     Item(const char* parentName, const int& id, const int& uuid) 
         : m_id(AssignID(id)), m_uuid(uuid), m_dateAdded(__DATE__), m_parentName(parentName), m_lastCounted("Never"), m_status(Available) {}
 
-    void SetStatus(const char* status) {
+    bool SetStatus(const char* status) {
         for (int i = 0; i < 3; i++) {
-            if (strcmp(m_status_names[i], status) == 0) { m_status = (Status)i; }
+            if (strcmp(m_status_names[i], status) == 0) { m_status = (Status)i; return true; }
         }
+        return false;
     }
 public:
     Item& operator=(Item& other) {

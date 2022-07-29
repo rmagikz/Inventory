@@ -6,36 +6,9 @@
 #include "Category.h"
 #include "Exports.h"
 #include "Count.h"
+#include "DBHandler.h"
 
 void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
-
-class DBHandler {
-private:
-    mongocxx::instance m_inst;
-    mongocxx::uri m_uri;
-    mongocxx::client m_client;
-    mongocxx::collection m_collection;
-    bsoncxx::oid m_inventoryID;
-    
-public:
-    DBHandler(const char* uri, const char* db, const char* collection) 
-        : m_uri(uri), m_client(m_uri), m_collection(m_client[db][collection]) {
-
-    }
-
-    void Save(std::string json) {
-        m_inventoryID = m_collection.insert_one(bsoncxx::from_json(json).view()).value().inserted_id().get_oid().value;
-    }
-
-    void Load() {
-        try { std::cout << bsoncxx::to_json(m_collection.find_one(document{} << "_id" << m_inventoryID << finalize).value().view()) << std::endl; }
-        catch (...) { std::cout << "COULDNT FIND" << std::endl; }
-    }
-
-    void Delete() {
-        m_client["inventory"].drop();
-    }
-};
 
 class Inventory {
 private:
@@ -87,7 +60,7 @@ private:
         }
     }
 public:
-    Inventory() : m_count(0), db_handler("mongodb+srv://magikz:Jessyca121@inv0.kwfwq.mongodb.net/?retryWrites=true&w=majority","inventory","inv0") {}
+    Inventory() : m_count(0), db_handler("mongodb+srv://<username>:<password>@inv0.kwfwq.mongodb.net/?retryWrites=true&w=majority","inventory","inv0") {}
     //Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
 
     void AddItem(const int& categoryId, const int& count = 1) {
@@ -105,20 +78,24 @@ public:
         m_count++;
     }
 
-    void SetStatus(const int& categoryId, const int& itemId, const char* status) {
-        if (Category* category = FindCategoryID(categoryId)) category->SetStatus(itemId, status);
+    bool SetStatus(const int& categoryId, const int& itemId, const char* status) {
+        if (Category* category = FindCategoryID(categoryId)) { category->SetStatus(itemId, status); return true; }
+        return false;
     }
 
-    void SetPrice(const int& categoryId, const int& price) {
-        if (Category* category = FindCategoryID(categoryId))  category->m_cost = price;
+    bool SetPrice(const int& categoryId, const int& price) {
+        if (Category* category = FindCategoryID(categoryId)) { category->m_cost = price; return true; }
+        return false;
     }
 
-    void GetLabel(const int& categoryId, const int& itemId, const int& print = 0) {
+    bool GetLabel(const int& categoryId, const int& itemId, const int& print = 0) {
         if (Category* category = FindCategoryID(categoryId)) {
             if (category->FindItemID(itemId)) {
                 GenerateLabel(categoryId, itemId, category->m_name, print);
+                return true;
             }
         }
+        return false;
     }
 
     void Find(const int& categoryId) {
