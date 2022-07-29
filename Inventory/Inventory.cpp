@@ -18,8 +18,8 @@ int main() {
     }
 
     inventory.Save();
-
-    inventory.Display();
+    inventory.Load();
+    //inventory.Display();
     //inventory.StartCount();
     //inventory.StartCount();
 
@@ -27,6 +27,7 @@ int main() {
     //inventory.ExportToExcel();
     //inventory.ExportToJSON();
   
+    inventory.Delete();
     system("pause");
 }
 

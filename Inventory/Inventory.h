@@ -15,6 +15,8 @@ private:
     mongocxx::uri m_uri;
     mongocxx::client m_client;
     mongocxx::collection m_collection;
+    bsoncxx::oid m_inventoryID;
+    
 public:
     DBHandler(const char* uri, const char* db, const char* collection) 
         : m_uri(uri), m_client(m_uri), m_collection(m_client[db][collection]) {
@@ -22,12 +24,16 @@ public:
     }
 
     void Save(std::string json) {
-        m_collection.insert_one(bsoncxx::from_json(json).view());
-        std::cout << "saved" << std::endl;
+        m_inventoryID = m_collection.insert_one(bsoncxx::from_json(json).view()).value().inserted_id().get_oid().value;
     }
 
     void Load() {
+        try { std::cout << bsoncxx::to_json(m_collection.find_one(document{} << "_id" << m_inventoryID << finalize).value().view()) << std::endl; }
+        catch (...) { std::cout << "COULDNT FIND" << std::endl; }
+    }
 
+    void Delete() {
+        m_client["inventory"].drop();
     }
 };
 
@@ -81,7 +87,7 @@ private:
         }
     }
 public:
-    Inventory() : m_count(0), db_handler("mongodb+srv://<username>:<password>@inv0.kwfwq.mongodb.net/?retryWrites=true&w=majority","inventory","inv0") {}
+    Inventory() : m_count(0), db_handler("mongodb+srv://magikz:Jessyca121@inv0.kwfwq.mongodb.net/?retryWrites=true&w=majority","inventory","inv0") {}
     //Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
 
     void AddItem(const int& categoryId, const int& count = 1) {
@@ -178,6 +184,14 @@ public:
 
     void Save() {
         db_handler.Save(exporter.JsonPayload(inventoryList));
+    }
+
+    void Load() {
+        db_handler.Load();
+    }
+
+    void Delete() {
+        db_handler.Delete();
     }
 };
 
