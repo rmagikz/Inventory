@@ -27,7 +27,7 @@ int main() {
     //inventory.ExportToExcel();
     //inventory.ExportToJSON();
   
-    inventory.Delete();
+    //inventory.Delete();
     system("pause");
 }
 

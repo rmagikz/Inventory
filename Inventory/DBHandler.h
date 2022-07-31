@@ -20,7 +20,14 @@ public:
     }
 
     void Load() {
-        try { std::cout << bsoncxx::to_json(m_collection.find_one(document{} << "_id" << m_inventoryID << finalize).value().view()) << std::endl; }
+        try { 
+            std::fstream text;
+            text.open("dboutput.txt", std::ios::out);
+            text << bsoncxx::to_json(m_collection.find_one({}).value().view());
+            text.close();
+            std::cout << bsoncxx::to_json(m_collection.find_one({}).value().view()) << std::endl;
+
+        }
         catch (...) { std::cout << "Could not find inventory document in DB" << std::endl; }
     }
 
