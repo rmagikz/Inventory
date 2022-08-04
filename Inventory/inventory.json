@@ -7,18 +7,43 @@
 			"Items" : [
 				{
 					"ID" : "10001",
+					"UUID" : "0",
+					"Parent Category" : "iphone x screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10002",
+					"UUID" : "4",
+					"Parent Category" : "iphone x screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10003",
+					"UUID" : "5",
+					"Parent Category" : "iphone x screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10004",
+					"UUID" : "6",
+					"Parent Category" : "iphone x screen/lcd",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10005",
+					"UUID" : "7",
+					"Parent Category" : "iphone x screen/lcd",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				}
 			]
 		},
@@ -29,18 +54,43 @@
 			"Items" : [
 				{
 					"ID" : "10001",
+					"UUID" : "1",
+					"Parent Category" : "iphone 11 pro max screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10002",
+					"UUID" : "8",
+					"Parent Category" : "iphone 11 pro max screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10003",
+					"UUID" : "9",
+					"Parent Category" : "iphone 11 pro max screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10004",
+					"UUID" : "10",
+					"Parent Category" : "iphone 11 pro max screen/lcd",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10005",
+					"UUID" : "11",
+					"Parent Category" : "iphone 11 pro max screen/lcd",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				}
 			]
 		},
@@ -51,18 +101,43 @@
 			"Items" : [
 				{
 					"ID" : "10001",
+					"UUID" : "2",
+					"Parent Category" : "iphone 8+ screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10002",
+					"UUID" : "12",
+					"Parent Category" : "iphone 8+ screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10003",
+					"UUID" : "13",
+					"Parent Category" : "iphone 8+ screen/lcd",
 					"Status" : "Available",
-					"Last Counted" : "Jul 27 2022"
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10004",
+					"UUID" : "14",
+					"Parent Category" : "iphone 8+ screen/lcd",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10005",
+					"UUID" : "15",
+					"Parent Category" : "iphone 8+ screen/lcd",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				}
 			]
 		},
@@ -73,18 +148,43 @@
 			"Items" : [
 				{
 					"ID" : "10001",
+					"UUID" : "3",
+					"Parent Category" : "ipad 10.2 (7th gen) glass",
 					"Status" : "Available",
 					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10002",
+					"UUID" : "16",
+					"Parent Category" : "ipad 10.2 (7th gen) glass",
 					"Status" : "Available",
 					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				},
 				{
 					"ID" : "10003",
+					"UUID" : "17",
+					"Parent Category" : "ipad 10.2 (7th gen) glass",
 					"Status" : "Available",
 					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10004",
+					"UUID" : "18",
+					"Parent Category" : "ipad 10.2 (7th gen) glass",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
+				},
+				{
+					"ID" : "10005",
+					"UUID" : "19",
+					"Parent Category" : "ipad 10.2 (7th gen) glass",
+					"Status" : "Available",
+					"Last Counted" : "Never"
+					"Date Added" : "Aug  3 2022"
 				}
 			]
 		}

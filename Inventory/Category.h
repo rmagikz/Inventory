@@ -1,72 +1,37 @@
 #pragma once
 
-#include "Common.h"
 #include "Item.h"
+#include "Utility.h"
 
-class Category {
-private:
-    std::vector<Item> m_items;
-    static int count;
-    const std::string m_id;
-    const char* m_name;
-    int m_cost;
+#include <vector>
 
-    Category(const char* name, const int& cost)
-        : m_id(AssignID(count)), m_name(name), m_cost(cost) {
-        count++;
-    }
+namespace SimpleInventory {
+    class Category {
+    private:
+        std::vector<Item> m_items;
+        static int count;
+        const std::string m_id;
+        const char* m_name;
+        int m_cost;
 
-    Item* FindItemID(const int& itemId) {
-        int left = 0;
-        int right = m_items.size() - 1;
+        Category(const char* name, const int& cost);
+        Category(const char* name, const char* id, const int& cost);
 
-        while (left <= right) {
-            int mid = left + ((right - left) / 2);
-            if (std::stoi(m_items[mid].m_id) == itemId) {
-                return &m_items[mid];
-            }
-            else if (itemId < std::stoi(m_items[mid].m_id)) {
-                right = mid - 1;
-            }
-            else if (itemId > std::stoi(m_items[mid].m_id)) {
-                left = mid + 1;
-            }
-        }
-        return NULL;
-    }
-    
-    void AddItem(const int& uuid) {
-        m_items.push_back(Item(m_name,m_items.size() + 1, uuid));
-    }
+        Item* FindItemID(const int& itemId);
+        void AddItem(const int& uuid);
+        void PushItem(Item& item);
+        void SetCost(const int& cost);
+        bool SetStatus(const int& itemId, const char* status);
+        bool SetLastCounted(const int& itemId, const char* lastCounted);
 
-    void SetCost(const int& cost) {
-        m_cost = cost;
-    }
+        void Display();
+    public:
+        std::vector<Item>* GetItems();
+        std::string GetId();
+        std::string GetName();
+        int GetCost();
 
-    bool SetStatus(const int& itemId, const char* status) {
-        if (Item* item = FindItemID(itemId)) { item->SetStatus(status); return true; }
-        return false;
-    }
-
-    bool SetLastCounted(const int& itemId, const char* lastCounted) {
-        if (Item* item = FindItemID(itemId)) { item->m_lastCounted = lastCounted; return true; }
-        return false;
-    }
-
-    void Display() {
-        std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << "\n";
-        for (int i = 0; i < m_items.size(); i++) {
-            std::cout << "  - ID: " << m_items[i].m_id << " | Added: " << m_items[i].m_dateAdded << " | " << m_items[i].GetStatus() << "\n";
-        }
-        std::cout << "\n";
-    }
-public:
-    std::vector<Item>* GetItems() { return &m_items; }
-    std::string GetId() { return m_id; }
-    std::string GetName() { return m_name; }
-    int GetCost() { return m_cost; }
-
-    friend class Inventory;
-};
-
-int Category::count = 1;
+        friend class Inventory;
+        friend class DBHandler;
+    };
+}

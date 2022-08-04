@@ -1,37 +1,38 @@
 #pragma once
 
-#include "Common.h"
+#include "Utility.h"
 
-enum Status { Available, Sold, Deleted };
+#include <string>
 
-class Item {
-private:
-    const char* m_status_names[3] = { "Available", "Sold", "Deleted" };
-    const std::string m_id;
-    const int m_uuid;
-    const char* m_dateAdded;
-    const char* m_parentName;
-    std::string m_lastCounted;
-    Status m_status;
+namespace SimpleInventory {
 
-    Item(const char* parentName, const int& id, const int& uuid) 
-        : m_id(AssignID(id)), m_uuid(uuid), m_dateAdded(__DATE__), m_parentName(parentName), m_lastCounted("Never"), m_status(Available) {}
+    static enum Status { Available, Sold, Deleted };
 
-    bool SetStatus(const char* status) {
-        for (int i = 0; i < 3; i++) {
-            if (strcmp(m_status_names[i], status) == 0) { m_status = (Status)i; return true; }
-        }
-        return false;
-    }
-public:
-    Item& operator=(Item& other) {
-        return *this;
-    }
-    std::string GetStatus() { return m_status_names[m_status]; }
-    std::string GetId() { return m_id; }
-    std::string GetLastCounted() { return m_lastCounted; }
-    std::string GetParentName() { return m_parentName; }
-    int GetUUID() { return m_uuid; }
+    class Item {
+    private:
+        const char* m_status_names[3] = { "Available", "Sold", "Deleted" };
+        std::string m_id;
+        int m_uuid;
+        std::string m_dateAdded;
+        std::string m_parentName;
+        std::string m_lastCounted;
+        Status m_status;
 
-    friend class Category;
-};
+        Item(const char* parentName, const int& id, const int& uuid);
+        Item();
+
+        bool SetStatus(const char* status);
+    public:
+        Item& operator=(Item& other);
+
+        int GetUUID();
+        std::string GetId();
+        std::string GetStatus();
+        std::string GetLastCounted();
+        std::string GetDateAdded();
+        std::string GetParentName();
+        
+        friend class Category;
+        friend class DBHandler;
+    };
+}

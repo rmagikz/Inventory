@@ -1,44 +1,42 @@
 #pragma once
 
-#include "Common.h"
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <chrono>
 
-using namespace DYMO_Label_Framework;
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/stdx.hpp>
+#include <mongocxx/uri.hpp>
+#include <mongocxx/instance.hpp>
+#include <bsoncxx/builder/stream/helpers.hpp>
+#include <bsoncxx/builder/stream/document.hpp>
+#include <bsoncxx/builder/stream/array.hpp>
 
-void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print) {
-    std::fstream baseLabel;
-    std::fstream newLabel;
-    baseLabel.open("baseLabel.label", std::ios::in);
-    newLabel.open("newLabel.label", std::ios::out);
-    std::string line;
-    if (baseLabel.is_open()) {
-        while (std::getline(baseLabel, line)) {
-            if (line.find("<Text>") != std::string::npos) {
-                newLabel << "              <Text>" << categoryId << "-" << itemId << "</Text>\n";
-            }
-            else if (line.find("<String") != std::string::npos) {
-                newLabel << "                   <String xml:space=\"preserve\">" << catName << "</String>\n";
-            }
-            else { newLabel << line << "\n"; }
-        }
-        newLabel.close();
-        baseLabel.close();
-    }
+#include <cstdint>
+#include <iostream>
+#include <vector>
 
-    std::cout << catName << std::endl;
-    std::cout << "ID: " << categoryId << "-" << itemId << std::endl;
-    std::cout << std::endl;
+#include "targetver.h"
 
-    if (print == 1) {
-        std::cout << "PRINTING LABEL" << std::endl;
-        try
-        {
-            IFrameworkPtr framework(__uuidof(Framework));
-            ILabelPtr label = framework->OpenLabel(L"newLabel.label");
-            framework->PrintLabel(L"DYMO LabelWriter 450 Turbo", L"", label->SaveToXml(), L"");
-        }
-        catch (_com_error& e)
-        {
-            _tprintf_s(_T("Com error was \"%s\", HRESULT 0x%X\n"), e.ErrorMessage(), e.Error());
-        }
-    }
+#include <stdio.h>
+#include <stdlib.h>
+#include <tchar.h>
+
+#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
+
+#include <atlbase.h>
+#include <atlstr.h>
+#include <atlpath.h>
+#include <atlsafe.h>
+
+#import "DYMO.Label.Framework.tlb" rename("CreateFont", "CreateFont_")
+
+namespace SimpleInventory {
+
+    using namespace DYMO_Label_Framework;
+
+    void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
 }
