@@ -2,6 +2,8 @@
 
 namespace SimpleInventory {
 
+    Inventory::Inventory() : m_count(0) {}
+
     Category* Inventory::FindCategoryID(const int& categoryId) {
         int left = 0;
         int right = inventoryList.size() - 1;
@@ -20,7 +22,6 @@ namespace SimpleInventory {
         }
         return NULL;
     }
-
 
     Category* Inventory::FindCategoryName(const char* categoryName) {
         for (int i = 0; i < inventoryList.size(); i++) {
@@ -43,9 +44,6 @@ namespace SimpleInventory {
             count.Display();
         }
     }
-
-    Inventory::Inventory() : m_count(0), db_handler("mongodb+srv://magikz:Jessyca121@inv0.kwfwq.mongodb.net/?retryWrites=true&w=majority", "inventory", "inv0") {}
-    //Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
 
     void Inventory::AddItem(const int& categoryId, const int& count) {
         for (int i = 0; i < count; i++) {
@@ -80,18 +78,6 @@ namespace SimpleInventory {
             }
         }
         return false;
-    }
-
-    void Inventory::Find(const int& categoryId) {
-        FindCategoryID(categoryId)->Display();
-    }
-
-    void Inventory::ExportToExcel() {
-        inventoryIO.ExportToExcel(inventoryList);
-    }
-
-    void Inventory::ExportToJSON() {
-        inventoryIO.ExportToJSON(inventoryList);
     }
 
     void Inventory::StartCount() {
@@ -143,8 +129,20 @@ namespace SimpleInventory {
         }
     }
 
+    void Inventory::Find(const int& categoryId) {
+        FindCategoryID(categoryId)->Display();
+    }
+
+    void Inventory::ExportToExcel() {
+        IO.ExportToExcel(inventoryList);
+    }
+
+    void Inventory::ExportToJSON() {
+        IO.ExportToJSON(inventoryList);
+    }
+
     void Inventory::Save() {
-        db_handler.Save(inventoryIO.JsonPayload(inventoryList));
+        db_handler.Save(IO.JsonPayload(inventoryList));
     }
 
     void Inventory::Load() {

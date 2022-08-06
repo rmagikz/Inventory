@@ -14,7 +14,7 @@ namespace SimpleInventory {
     public:
         std::vector<Count> inventoryCounts;
         std::vector<Category> inventoryList;
-        InvIO inventoryIO;
+        InvIO IO;
         DBHandler db_handler;
         int m_count;
 

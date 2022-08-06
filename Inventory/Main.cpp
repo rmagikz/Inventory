@@ -1,4 +1,5 @@
 #include "Inventory.h"
+#include <filesystem>
 
 using namespace SimpleInventory;
 
@@ -18,17 +19,17 @@ int main() {
         inventory.AddItem(i,4);
     }
 
-    inventory.Save();
-    inventory.Load();
+    //inventory.Save();
+    //inventory.Load();
     //inventory.Display();
     //inventory.StartCount();
     //inventory.StartCount();
-
     //inventory.DisplayCounts(1);
     //inventory.ExportToExcel();
     //inventory.ExportToJSON();
   
     //inventory.Delete();
+
     system("pause");
 }
 

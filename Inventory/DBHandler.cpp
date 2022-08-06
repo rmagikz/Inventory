@@ -2,11 +2,16 @@
 
 namespace SimpleInventory {
 
-    DBHandler::DBHandler(const char* uri, const char* db, const char* collection)
-        : m_uri(uri), m_client(m_uri), m_collection(m_client[db][collection]) {}
+    DBHandler::DBHandler() {}
+
+    void DBHandler::Init(const char* uri, const char* db, const char* collection) {
+        m_uri = mongocxx::uri(uri);
+        m_client = mongocxx::client(m_uri);
+        m_collection = mongocxx::collection(m_client[db][collection]);
+    }
 
     void DBHandler::Save(std::string json) {
-        try { m_collection.insert_one(bsoncxx::from_json(json)); }
+        try { Delete(); m_collection.insert_one(bsoncxx::from_json(json)); }
         catch (...) { std::cout << "Could not insert data to DB" << std::endl; }
     }
 
@@ -47,7 +52,7 @@ namespace SimpleInventory {
     }
 
     void DBHandler::Delete() {
-        try { m_client["inventory"].drop(); }
+        try { m_collection.delete_one(document{} << "Inventory" << open_document << "$type" << "object" << close_document << finalize); }
         catch (...) { std::cout << "Could not delete DB entry" << std::endl; }
     }
 }

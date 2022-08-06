@@ -42,7 +42,9 @@ namespace SimpleInventory {
         std::vector<Category> FromJSON(JSONObject* parsedJSON);
 
     public:
-        DBHandler(const char* uri, const char* db, const char* collection);
+        DBHandler();
+
+        void Init(const char* uri, const char* db, const char* collection);
 
         void Save(std::string json);
         std::vector<Category> Load();
