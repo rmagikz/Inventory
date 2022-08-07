@@ -17,13 +17,18 @@ namespace SimpleInventory {
         std::string m_parentName;
         std::string m_lastCounted;
         Status m_status;
+    public:
+        Item& operator=(Item& other);
 
         Item(const char* parentName, const int& id, const int& uuid);
         Item();
 
-        bool SetStatus(const char* status);
-    public:
-        Item& operator=(Item& other);
+        void SetStatus(const char* status);
+        void SetId(std::string& id);
+        void SetUUID(std::string& id);
+        void SetDateAdded(std::string& dateAdded);
+        void SetParent(std::string& parentName);
+        void SetLastCounted(std::string& lastCounted);
 
         int GetUUID();
         std::string GetId();
@@ -31,8 +36,5 @@ namespace SimpleInventory {
         std::string GetLastCounted();
         std::string GetDateAdded();
         std::string GetParentName();
-        
-        friend class Category;
-        friend class DBHandler;
     };
 }

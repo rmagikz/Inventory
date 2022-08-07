@@ -13,25 +13,23 @@ namespace SimpleInventory {
         const std::string m_id;
         const char* m_name;
         int m_cost;
-
+    public:
         Category(const char* name, const int& cost);
         Category(const char* name, const char* id, const int& cost);
 
         Item* FindItemID(const int& itemId);
         void AddItem(const int& uuid);
         void PushItem(Item& item);
+
+        void Display();
+
         void SetCost(const int& cost);
         bool SetStatus(const int& itemId, const char* status);
         bool SetLastCounted(const int& itemId, const char* lastCounted);
 
-        void Display();
-    public:
         std::vector<Item>* GetItems();
         std::string GetId();
         std::string GetName();
-        int GetCost();
-
-        friend class Inventory;
-        friend class DBHandler;
+        int GetCost(); 
     };
 }

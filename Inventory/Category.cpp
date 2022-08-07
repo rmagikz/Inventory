@@ -18,13 +18,13 @@ namespace SimpleInventory {
 
         while (left <= right) {
             int mid = left + ((right - left) / 2);
-            if (std::stoi(m_items[mid].m_id) == itemId) {
+            if (std::stoi(m_items[mid].GetId()) == itemId) {
                 return &m_items[mid];
             }
-            else if (itemId < std::stoi(m_items[mid].m_id)) {
+            else if (itemId < std::stoi(m_items[mid].GetId())) {
                 right = mid - 1;
             }
-            else if (itemId > std::stoi(m_items[mid].m_id)) {
+            else if (itemId > std::stoi(m_items[mid].GetId())) {
                 left = mid + 1;
             }
         }
@@ -39,6 +39,14 @@ namespace SimpleInventory {
         m_items.push_back(item);
     }
 
+    void Category::Display() {
+        std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << "\n";
+        for (int i = 0; i < m_items.size(); i++) {
+            std::cout << "  - ID: " << m_items[i].GetId() << " | Added: " << m_items[i].GetDateAdded() << " | " << m_items[i].GetStatus() << "\n";
+        }
+        std::cout << "\n";
+    }
+
     void Category::SetCost(const int& cost) {
         m_cost = cost;
     }
@@ -49,16 +57,8 @@ namespace SimpleInventory {
     }
 
     bool Category::SetLastCounted(const int& itemId, const char* lastCounted) {
-        if (Item* item = FindItemID(itemId)) { item->m_lastCounted = lastCounted; return true; }
+        if (Item* item = FindItemID(itemId)) { item->GetLastCounted() = lastCounted; return true; }
         return false;
-    }
-
-    void Category::Display() {
-        std::cout << "ID: " << m_id << " | Name: " << m_name << " | Cost: " << m_cost << "\n";
-        for (int i = 0; i < m_items.size(); i++) {
-            std::cout << "  - ID: " << m_items[i].m_id << " | Added: " << m_items[i].m_dateAdded << " | " << m_items[i].GetStatus() << "\n";
-        }
-        std::cout << "\n";
     }
 
     std::vector<Item>* Category::GetItems() { return &m_items; }

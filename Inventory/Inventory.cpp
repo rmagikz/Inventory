@@ -2,7 +2,10 @@
 
 namespace SimpleInventory {
 
-    Inventory::Inventory() : m_count(0) {}
+    Inventory::Inventory() :  db_handler({}), IO({}), m_count(0), mSaveMode(LOCAL) {
+        CoInitialize(NULL);
+        db_handler.Init("mongodb+srv://magikz:Jessyca121@inv0.kwfwq.mongodb.net/inv0&authSource=admin", "Inventory", "inv0");
+    }
 
     Category* Inventory::FindCategoryID(const int& categoryId) {
         int left = 0;
@@ -10,13 +13,13 @@ namespace SimpleInventory {
 
         while (left <= right) {
             int mid = left + ((right - left) / 2);
-            if (std::stoi(inventoryList[mid].m_id) == categoryId) {
+            if (std::stoi(inventoryList[mid].GetId()) == categoryId) {
                 return &inventoryList[mid];
             }
-            else if (categoryId < std::stoi(inventoryList[mid].m_id)) {
+            else if (categoryId < std::stoi(inventoryList[mid].GetId())) {
                 right = mid - 1;
             }
-            else if (categoryId > std::stoi(inventoryList[mid].m_id)) {
+            else if (categoryId > std::stoi(inventoryList[mid].GetId())) {
                 left = mid + 1;
             }
         }
@@ -25,7 +28,7 @@ namespace SimpleInventory {
 
     Category* Inventory::FindCategoryName(const char* categoryName) {
         for (int i = 0; i < inventoryList.size(); i++) {
-            if (inventoryList[i].m_name == categoryName) {
+            if (inventoryList[i].GetName() == categoryName) {
                 return &inventoryList[i];
             }
         }
@@ -66,14 +69,14 @@ namespace SimpleInventory {
     }
 
     bool Inventory::SetPrice(const int& categoryId, const int& price) {
-        if (Category* category = FindCategoryID(categoryId)) { category->m_cost = price; return true; }
+        if (Category* category = FindCategoryID(categoryId)) { category->SetCost(price); return true; }
         return false;
     }
 
     bool Inventory::GetLabel(const int& categoryId, const int& itemId, const int& print) {
         if (Category* category = FindCategoryID(categoryId)) {
             if (category->FindItemID(itemId)) {
-                GenerateLabel(categoryId, itemId, category->m_name, print);
+                GenerateLabel(categoryId, itemId, category->GetName(), print);
                 return true;
             }
         }
@@ -137,16 +140,26 @@ namespace SimpleInventory {
         IO.ExportToExcel(inventoryList);
     }
 
-    void Inventory::ExportToJSON() {
-        IO.ExportToJSON(inventoryList);
+    void Inventory::SaveMode(const SAVE_MODE& saveMode) {
+        mSaveMode = saveMode;
     }
 
     void Inventory::Save() {
-        db_handler.Save(IO.JsonPayload(inventoryList));
+        if (mSaveMode == LOCAL) {
+            IO.ExportToJSON(inventoryList);
+        }
+        if (mSaveMode == MONGODB) {
+            db_handler.Save(IO.JsonPayload(inventoryList));
+        }
     }
 
     void Inventory::Load() {
-        inventoryList = db_handler.Load();
+        if (mSaveMode == LOCAL) {
+
+        }
+        if (mSaveMode == MONGODB) {
+            inventoryList = IO.FromJSON(db_handler.Load());
+        }
     }
 
     void Inventory::Delete() {

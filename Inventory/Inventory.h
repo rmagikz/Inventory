@@ -10,13 +10,16 @@
 namespace SimpleInventory {
     void GenerateLabel(const int& categoryId, const int& itemId, std::string catName, const int& print);
 
+    static enum SAVE_MODE { LOCAL, MONGODB };
+
     class Inventory {
-    public:
+    private:
         std::vector<Count> inventoryCounts;
         std::vector<Category> inventoryList;
-        InvIO IO;
         DBHandler db_handler;
+        InvIO IO;
         int m_count;
+        SAVE_MODE mSaveMode;
 
         Category* FindCategoryID(const int& categoryId);
         Category* FindCategoryName(const char* categoryName);
@@ -37,13 +40,13 @@ namespace SimpleInventory {
         void Find(const int& categoryId);
 
         void ExportToExcel();
-        void ExportToJSON();
 
         void StartCount();
 
         void Display();
         void DisplayCounts(const bool& extra);
 
+        void SaveMode(const SAVE_MODE& saveMode);
         void Save();
         void Load();
         void Delete();

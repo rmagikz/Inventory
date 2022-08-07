@@ -16,11 +16,6 @@ using bsoncxx::builder::stream::finalize;
 using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
 
-#include <JSONToken.h>
-#include <JSONTokenizer.h>
-#include <JSONValue.h>
-#include <JSONParser.h>
-
 #include <fstream>
 #include <iostream>
 
@@ -28,9 +23,6 @@ using bsoncxx::builder::stream::open_document;
 #include "Item.h"
 
 namespace SimpleInventory {
-
-    using namespace JSONparser;
-
     class DBHandler {
     private:
         mongocxx::instance m_inst;
@@ -38,16 +30,13 @@ namespace SimpleInventory {
         mongocxx::client m_client;
         mongocxx::collection m_collection;
         bsoncxx::oid m_inventoryID;
-
-        std::vector<Category> FromJSON(JSONObject* parsedJSON);
-
     public:
         DBHandler();
 
         void Init(const char* uri, const char* db, const char* collection);
 
         void Save(std::string json);
-        std::vector<Category> Load();
+        std::string Load();
         void Delete();
     };
 }

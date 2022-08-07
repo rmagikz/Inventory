@@ -4,8 +4,6 @@
 using namespace SimpleInventory;
 
 int main() {
-    CoInitialize(NULL);
-
     //SETUP
     //DBHandler handler;
     Inventory inventory;
@@ -19,16 +17,16 @@ int main() {
         inventory.AddItem(i,4);
     }
 
-    //inventory.Save();
-    //inventory.Load();
-    //inventory.Display();
-    //inventory.StartCount();
-    //inventory.StartCount();
-    //inventory.DisplayCounts(1);
-    //inventory.ExportToExcel();
-    //inventory.ExportToJSON();
+    inventory.SaveMode(MONGODB);
+    inventory.Save();
+    inventory.Load();
+    inventory.Display();
+    inventory.StartCount();
+    inventory.StartCount();
+    inventory.DisplayCounts(1);
+    inventory.ExportToExcel();
   
-    //inventory.Delete();
+    inventory.Delete();
 
     system("pause");
 }

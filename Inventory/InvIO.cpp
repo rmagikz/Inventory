@@ -94,11 +94,11 @@ namespace SimpleInventory {
 
     InvIO::InvIO() {}
 
-    void InvIO::ExportToExcel(std::vector<Category>& inventory) {
+    void InvIO::ExportToExcel(std::vector<Category>& inventory, const std::string& fileName, const std::string& filePath) {
         std::fstream baseTable;
         std::fstream newTable;
         baseTable.open("baseTable.xml", std::ios::in);
-        newTable.open("newTable.xml", std::ios::out);
+        newTable.open(filePath + "\\" + fileName + ".xml", std::ios::out);
         if (baseTable.is_open() && newTable.is_open()) {
             std::string line;
             while (std::getline(baseTable, line)) {
@@ -119,5 +119,40 @@ namespace SimpleInventory {
         newJson.open("inventory.json", std::ios::out);
         newJson << JsonPayload(inventory);
         newJson.close();
+    }
+
+    std::vector<Category> InvIO::FromJSON(const std::string& rawJson) {
+        Parser parser;
+        JSONObject parsedJSON = parser.Parse(rawJson);
+        std::vector<Category> inventoryList;
+
+        for (int i = 0; i < parsedJSON["Inventory"].mCount; i++) {
+            std::string name = parsedJSON["Inventory"][i]["Name"].asString();
+            std::string id = parsedJSON["Inventory"][i]["ID"].asString();
+            int cost = parsedJSON["Inventory"][i]["Cost"].asInt();
+
+            Category category(name.c_str(), id.c_str(), cost);
+
+            for (int j = 0; j < parsedJSON["Inventory"][i]["Items"].mCount; j++) {
+                std::string item_id = parsedJSON["Inventory"][i]["Items"][j]["ID"].asString();
+                std::string item_uuid = parsedJSON["Inventory"][i]["Items"][j]["UUID"].asString();
+                std::string item_parent = parsedJSON["Inventory"][i]["Items"][j]["Parent Category"].asString();
+                std::string item_status = parsedJSON["Inventory"][i]["Items"][j]["Status"].asString();
+                std::string item_lastCounted = parsedJSON["Inventory"][i]["Items"][j]["Last Counted"].asString();
+                std::string item_dateAdded = parsedJSON["Inventory"][i]["Items"][j]["Date Added"].asString();
+
+                Item item;
+                item.SetId(item_id);
+                item.SetUUID(item_uuid);
+                item.SetParent(item_parent);
+                item.SetStatus(item_status.c_str());
+                item.SetLastCounted(item_lastCounted);
+                item.SetDateAdded(item_dateAdded);
+
+                category.PushItem(item);
+            }
+            inventoryList.push_back(category);
+        }
+        return inventoryList;
     }
 }
