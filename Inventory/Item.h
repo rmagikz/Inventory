@@ -30,11 +30,11 @@ namespace SimpleInventory {
         void SetParent(std::string& parentName);
         void SetLastCounted(std::string& lastCounted);
 
-        int GetUUID();
-        std::string GetId();
-        std::string GetStatus();
-        std::string GetLastCounted();
-        std::string GetDateAdded();
-        std::string GetParentName();
+        int GetUUID() const;
+        std::string GetId() const;
+        std::string GetStatus() const;
+        std::string GetLastCounted() const;
+        std::string GetDateAdded() const;
+        std::string GetParentName() const;
     };
 }

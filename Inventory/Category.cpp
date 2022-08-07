@@ -61,10 +61,10 @@ namespace SimpleInventory {
         return false;
     }
 
-    std::vector<Item>* Category::GetItems() { return &m_items; }
-    std::string Category::GetId() { return m_id; }
-    std::string Category::GetName() { return m_name; }
-    int Category::GetCost() { return m_cost; }
+    std::vector<Item> Category::GetItems() const { return m_items; }
+    std::string Category::GetId() const { return m_id; }
+    std::string Category::GetName() const { return m_name; }
+    int Category::GetCost() const { return m_cost; }
 
     int Category::count = 1;
 }

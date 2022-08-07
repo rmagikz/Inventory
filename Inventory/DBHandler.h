@@ -28,6 +28,7 @@ namespace SimpleInventory {
         mongocxx::instance m_inst;
         mongocxx::uri m_uri;
         mongocxx::client m_client;
+        mongocxx::database m_db;
         mongocxx::collection m_collection;
         bsoncxx::oid m_inventoryID;
     public:

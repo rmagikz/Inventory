@@ -24,10 +24,10 @@ namespace SimpleInventory {
         }
     }
 
-    std::string Item::GetStatus() { return m_status_names[m_status]; }
-    std::string Item::GetId() { return m_id; }
-    std::string Item::GetLastCounted() { return m_lastCounted; }
-    std::string Item::GetParentName() { return m_parentName; }
-    std::string Item::GetDateAdded() { return m_dateAdded; }
-    int Item::GetUUID() { return m_uuid; }
+    std::string Item::GetStatus() const { return m_status_names[m_status]; }
+    std::string Item::GetId() const { return m_id; }
+    std::string Item::GetLastCounted() const { return m_lastCounted; }
+    std::string Item::GetParentName() const { return m_parentName; }
+    std::string Item::GetDateAdded() const { return m_dateAdded; }
+    int Item::GetUUID() const { return m_uuid; }
 }

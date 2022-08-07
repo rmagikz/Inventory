@@ -18,7 +18,6 @@ namespace SimpleInventory {
         Count();
 
         void Display();
-        void Status();
         void DisplayItems();
         bool Exists(const int& uuid);
     };

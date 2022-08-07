@@ -13,9 +13,10 @@ namespace SimpleInventory {
     static enum SAVE_MODE { LOCAL, MONGODB };
 
     class Inventory {
-    private:
+    public:
         std::vector<Count> inventoryCounts;
         std::vector<Category> inventoryList;
+        Count* currentCount;
         DBHandler db_handler;
         InvIO IO;
         int m_count;
@@ -23,11 +24,8 @@ namespace SimpleInventory {
 
         Category* FindCategoryID(const int& categoryId);
         Category* FindCategoryName(const char* categoryName);
-
-        void SetupCount(Count& count);
     public:
         Inventory();
-        //Inventory(const int& count) : m_count(0) { inventoryList.reserve(count); }
 
         void AddItem(const int& categoryId, const int& count = 1);
         void CreateItem(const char* name, const int& cost);
@@ -35,20 +33,27 @@ namespace SimpleInventory {
         bool SetStatus(const int& categoryId, const int& itemId, const char* status);
         bool SetPrice(const int& categoryId, const int& price);
 
-        bool GetLabel(const int& categoryId, const int& itemId, const int& print = 0);
-
         void Find(const int& categoryId);
 
-        void ExportToExcel();
+        bool GetLabel(const int& categoryId, const int& itemId, const int& print = 0);
 
         void StartCount();
+        int CountItem(const std::string& input);
+        void CloseCount();
+        void ExitCount();
+
+        void SaveMode(const SAVE_MODE& saveMode);
+
+        void ExportToExcel();
+        
+        void Save();
+        void Load();
+        void Delete();
 
         void Display();
         void DisplayCounts(const bool& extra);
 
-        void SaveMode(const SAVE_MODE& saveMode);
-        void Save();
-        void Load();
-        void Delete();
+        std::vector<Category> GetInventory() const;
+        std::vector<Count> GetCounts() const;
     };
 }

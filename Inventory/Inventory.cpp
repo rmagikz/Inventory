@@ -35,19 +35,6 @@ namespace SimpleInventory {
         return 0;
     }
 
-    void Inventory::SetupCount(Count& count) {
-        if (inventoryCounts.size() > 0 && !inventoryCounts.back().m_finished) {
-            std::cout << "Resuming latest count.\nTo open new count please close this one out first by using \"close\"\n";
-            count = inventoryCounts.back();
-            inventoryCounts.pop_back();
-        }
-        else {
-            count.m_dateOpened = __DATE__;
-            count.m_total = m_count;
-            count.Display();
-        }
-    }
-
     void Inventory::AddItem(const int& categoryId, const int& count) {
         for (int i = 0; i < count; i++) {
             FindCategoryID(categoryId)->AddItem(m_count);
@@ -73,6 +60,10 @@ namespace SimpleInventory {
         return false;
     }
 
+    void Inventory::Find(const int& categoryId) {
+        FindCategoryID(categoryId)->Display();
+    }
+
     bool Inventory::GetLabel(const int& categoryId, const int& itemId, const int& print) {
         if (Category* category = FindCategoryID(categoryId)) {
             if (category->FindItemID(itemId)) {
@@ -84,39 +75,83 @@ namespace SimpleInventory {
     }
 
     void Inventory::StartCount() {
-        Count count;
-        SetupCount(count);
-        std::string input;
-        while (true) {
-            std::getline(std::cin, input);
-            if (input == "exit") { count.m_finished = false; break; }
-            if (input == "close") { count.m_dateClosed = __DATE__; count.m_finished = true; break; }
-            if (input == "status") { count.Status(); continue; }
-            try {
-                int categoryId = stoi(input.substr(0, input.find("-")));
-                int itemId = stoi(input.substr(input.find("-") + 1, input.length()));
-                if (Category* category = FindCategoryID(categoryId)) {
-                    if (Item* item = category->FindItemID(itemId)) {
-                        if (count.Exists(item->GetUUID())) {
-                            std::cout << "Already Counted.\n";
-                            continue;
-                        }
-                        category->SetLastCounted(itemId, __DATE__);
-                        count.m_items.push_back((*item));
-                        count.m_counted++;
-                        continue;
+        currentCount = new Count();
+        if (inventoryCounts.size() > 0 && !inventoryCounts.back().m_finished) {
+            *currentCount = inventoryCounts.back();
+            inventoryCounts.pop_back();
+        }
+        else {
+            currentCount->m_dateOpened = __DATE__;
+            currentCount->m_total = m_count;
+        }
+    }
+
+    int Inventory::CountItem(const std::string& input) {
+        try {
+            int categoryId = std::stoi(input.substr(0, input.find("-")));
+            int itemId = stoi(input.substr(input.find("-") + 1, input.length()));
+            if (Category* category = FindCategoryID(categoryId)) {
+                if (Item* item = category->FindItemID(itemId)) {
+                    if (currentCount->Exists(item->GetUUID())) {
+                        return 1;
                     }
+                    category->SetLastCounted(itemId, __DATE__);
+                    currentCount->m_items.push_back((*item));
+                    currentCount->m_counted++;
                 }
-                std::cout << "Item does not belong in inventory.\n";
-            }
-            catch (...) {
-                std::cout << "Invalid input.\n";
             }
         }
-        count.m_variance = count.m_counted - m_count;
-        inventoryCounts.push_back(count);
-        std::cout << "Exited.\n";
-        std::cout << "\n";
+        catch (...) {
+            return 2;
+        }
+        return 0;
+    }
+
+    void Inventory::CloseCount() {
+        currentCount->m_dateClosed = __DATE__;
+        currentCount->m_finished = true;
+        currentCount->m_variance = currentCount->m_counted - m_count;
+        inventoryCounts.push_back(*currentCount);
+        delete(currentCount);
+    }
+
+    void Inventory::ExitCount() {
+        currentCount->m_finished = false;
+        currentCount->m_variance = currentCount->m_counted - m_count;
+        inventoryCounts.push_back(*currentCount);
+        delete(currentCount);
+    }
+
+    void Inventory::SaveMode(const SAVE_MODE& saveMode) {
+        mSaveMode = saveMode;
+    }
+
+    void Inventory::ExportToExcel() {
+        IO.ExportToExcel(inventoryList);
+    }
+
+    void Inventory::Save() {
+        if (mSaveMode == LOCAL) {
+            //IO.ExportToJSON(inventoryList);
+        }
+        if (mSaveMode == MONGODB) {
+            db_handler.Save(IO.JsonInventory(inventoryList, inventoryCounts));
+        }
+    }
+
+    void Inventory::Load() {
+        if (mSaveMode == LOCAL) {
+
+        }
+        if (mSaveMode == MONGODB) {
+            std::string loadedJSON = db_handler.Load();
+            inventoryList = IO.FromJSONInventory(loadedJSON);
+            inventoryCounts = IO.FromJSONCounts(loadedJSON);
+        }
+    }
+
+    void Inventory::Delete() {
+        db_handler.Delete();
     }
 
     void Inventory::Display() {
@@ -132,38 +167,11 @@ namespace SimpleInventory {
         }
     }
 
-    void Inventory::Find(const int& categoryId) {
-        FindCategoryID(categoryId)->Display();
+    std::vector<Category> Inventory::GetInventory() const {
+        return inventoryList;
     }
-
-    void Inventory::ExportToExcel() {
-        IO.ExportToExcel(inventoryList);
-    }
-
-    void Inventory::SaveMode(const SAVE_MODE& saveMode) {
-        mSaveMode = saveMode;
-    }
-
-    void Inventory::Save() {
-        if (mSaveMode == LOCAL) {
-            IO.ExportToJSON(inventoryList);
-        }
-        if (mSaveMode == MONGODB) {
-            db_handler.Save(IO.JsonPayload(inventoryList));
-        }
-    }
-
-    void Inventory::Load() {
-        if (mSaveMode == LOCAL) {
-
-        }
-        if (mSaveMode == MONGODB) {
-            inventoryList = IO.FromJSON(db_handler.Load());
-        }
-    }
-
-    void Inventory::Delete() {
-        db_handler.Delete();
+    std::vector<Count> Inventory::GetCounts() const {
+        return inventoryCounts;
     }
 }
 

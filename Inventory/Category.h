@@ -27,9 +27,9 @@ namespace SimpleInventory {
         bool SetStatus(const int& itemId, const char* status);
         bool SetLastCounted(const int& itemId, const char* lastCounted);
 
-        std::vector<Item>* GetItems();
-        std::string GetId();
-        std::string GetName();
-        int GetCost(); 
+        std::vector<Item> GetItems() const;
+        std::string GetId() const;
+        std::string GetName() const;
+        int GetCost() const;
     };
 }

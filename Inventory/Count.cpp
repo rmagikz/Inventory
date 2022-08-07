@@ -10,10 +10,6 @@ namespace SimpleInventory {
             << m_total << " | Variance: " << m_variance << "\n";
     }
 
-    void Count::Status() {
-        std::cout << "Counted: " << m_counted << " | Expected: " << m_total << " | Variance : " << m_counted - m_total << "\n";
-    }
-
     void Count::DisplayItems() {
         for (int i = 0; i < m_items.size(); i++) {
             std::cout << "  -"

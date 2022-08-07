@@ -6,7 +6,7 @@ namespace SimpleInventory {
         return "<ss:Cell><ss:Data ss:Type=\"" + type + "\">" + content + "</ss:Data></ss:Cell>\n";
     }
 
-    void InvIO::LoadCategory(std::string& payload, Category& category) {
+    void InvIO::LoadCategory(std::string& payload, const Category& category) {
         payload
             += "<ss:Row>"
             + ExportLine(category.GetId(), "Number")
@@ -18,7 +18,7 @@ namespace SimpleInventory {
             + "</ss:Row>";
     }
 
-    void InvIO::LoadItem(std::string& payload, Item& item) {
+    void InvIO::LoadItem(std::string& payload, const Item& item) {
         payload
             += "<ss:Row>"
             + ExportLine()
@@ -30,12 +30,12 @@ namespace SimpleInventory {
             + "</ss:Row>";
     }
 
-    std::string InvIO::ExcelPayload(std::vector<Category>& inventoryList) {
+    std::string InvIO::ExcelPayload(const std::vector<Category>& inventoryList) {
         std::string payload;
         for (int i = 0; i < inventoryList.size(); i++) {
             LoadCategory(payload, inventoryList[i]);
-            for (int j = 0; j < inventoryList[i].GetItems()->size(); j++) {
-                LoadItem(payload, (*inventoryList[i].GetItems())[j]);
+            for (int j = 0; j < inventoryList[i].GetItems().size(); j++) {
+                LoadItem(payload, inventoryList[i].GetItems()[j]);
             }
             payload += "<ss:Row>" + ExportLine() + "</ss:Row>";
         }
@@ -57,7 +57,11 @@ namespace SimpleInventory {
         return ToJsonString(key) + " : " + ToJsonString(value);
     }
 
-    std::string InvIO::JsonItem(const std::string& key, std::vector<Item>& m_items) {
+    std::string InvIO::JsonBool(const std::string& key, const bool& value) {
+        return ToJsonString(key) + " : " + (value == 0 ? "false": "true");
+    }
+
+    std::string InvIO::JsonItem(const std::string& key, const std::vector<Item>& m_items) {
         std::string result;
         result += ToJsonString(key) + " : [\n";
         for (int i = 0; i < m_items.size(); i++) {
@@ -75,7 +79,7 @@ namespace SimpleInventory {
         return result;
     }
 
-    std::string InvIO::JsonPayload(std::vector<Category>& inventoryList) {
+    std::string InvIO::JsonInventory(const std::vector<Category>& inventoryList, const std::vector<Count>& inventoryCounts) {
         std::string payload;
         payload += "{\n";
         payload += "\t" + ToJsonString("Inventory") + " : [\n";
@@ -84,8 +88,28 @@ namespace SimpleInventory {
             payload += "\t\t\t" + JsonString("Name", inventoryList[i].GetName()) + ",\n";
             payload += "\t\t\t" + JsonString("ID", inventoryList[i].GetId()) + ",\n";
             payload += "\t\t\t" + JsonNumber("Cost", inventoryList[i].GetCost()) + ",\n";
-            payload += "\t\t\t" + JsonItem("Items", (*inventoryList[i].GetItems()));
+            payload += "\t\t\t" + JsonItem("Items", inventoryList[i].GetItems());
             if (i == inventoryList.size() - 1) { payload += "\t\t}\n"; }
+            else { payload += "\t\t},\n"; }
+        }
+        payload += "\t],\n";
+        payload += JsonCount(inventoryCounts);
+        return payload;
+    }
+
+    std::string InvIO::JsonCount(const std::vector<Count>& inventoryCounts) {
+        std::string payload;
+        payload += "\t" + ToJsonString("Counts") + " : [\n";
+        for (int i = 0; i < inventoryCounts.size(); i++) {
+            payload += "\t\t{\n";
+            payload += "\t\t\t" + JsonString("Date Opened", inventoryCounts[i].m_dateOpened) + ",\n";
+            payload += "\t\t\t" + JsonString("Date Closed", inventoryCounts[i].m_dateClosed) + ",\n";
+            payload += "\t\t\t" + JsonNumber("Total", inventoryCounts[i].m_total) + ",\n";
+            payload += "\t\t\t" + JsonNumber("Counted", inventoryCounts[i].m_counted) + ",\n";
+            payload += "\t\t\t" + JsonNumber("Variance", inventoryCounts[i].m_variance) + ",\n";
+            payload += "\t\t\t" + JsonBool("Finished", inventoryCounts[i].m_finished) + ",\n";
+            payload += "\t\t\t" + JsonItem("Items", inventoryCounts[i].m_items);
+            if (i == inventoryCounts.size() - 1) { payload += "\t\t}\n"; }
             else { payload += "\t\t},\n"; }
         }
         payload += "\t]\n}";
@@ -114,14 +138,14 @@ namespace SimpleInventory {
         }
     }
 
-    void InvIO::ExportToJSON(std::vector<Category>& inventory) {
+    void InvIO::ExportToJSON(const std::vector<Category>& inventoryList, const std::vector<Count>& inventoryCounts) {
         std::fstream newJson;
         newJson.open("inventory.json", std::ios::out);
-        newJson << JsonPayload(inventory);
+        newJson << JsonInventory(inventoryList, inventoryCounts);
         newJson.close();
     }
 
-    std::vector<Category> InvIO::FromJSON(const std::string& rawJson) {
+    std::vector<Category> InvIO::FromJSONInventory(const std::string& rawJson) {
         Parser parser;
         JSONObject parsedJSON = parser.Parse(rawJson);
         std::vector<Category> inventoryList;
@@ -154,5 +178,49 @@ namespace SimpleInventory {
             inventoryList.push_back(category);
         }
         return inventoryList;
+    }
+
+    std::vector<Count> InvIO::FromJSONCounts(const std::string& rawJson) {
+        Parser parser;
+        JSONObject parsedJSON = parser.Parse(rawJson);
+        std::vector<Count> inventoryCounts;
+
+        for (int i = 0; i < parsedJSON["Counts"].mCount; i++) {
+            std::string dateOpened = parsedJSON["Counts"][i]["Date Opened"].asString();
+            std::string dateClosed = parsedJSON["Counts"][i]["Date Closed"].asString();
+            int total = parsedJSON["Counts"][i]["Total"].asInt();
+            int counted = parsedJSON["Counts"][i]["Counted"].asInt();
+            int variance = parsedJSON["Counts"][i]["Variance"].asInt();
+            int finished = parsedJSON["Counts"][i]["Finished"].asBool();
+
+            Count count;
+            count.m_dateOpened = dateOpened;
+            count.m_dateClosed = dateClosed;
+            count.m_total = total;
+            count.m_counted = counted;
+            count.m_variance = variance;
+            count.m_finished = finished;
+
+            for (int j = 0; j < parsedJSON["Counts"][i]["Items"].mCount; j++) {
+                std::string item_id = parsedJSON["Counts"][i]["Items"][j]["ID"].asString();
+                std::string item_uuid = parsedJSON["Counts"][i]["Items"][j]["UUID"].asString();
+                std::string item_parent = parsedJSON["Counts"][i]["Items"][j]["Parent Category"].asString();
+                std::string item_status = parsedJSON["Counts"][i]["Items"][j]["Status"].asString();
+                std::string item_lastCounted = parsedJSON["Counts"][i]["Items"][j]["Last Counted"].asString();
+                std::string item_dateAdded = parsedJSON["Counts"][i]["Items"][j]["Date Added"].asString();
+
+                Item item;
+                item.SetId(item_id);
+                item.SetUUID(item_uuid);
+                item.SetParent(item_parent);
+                item.SetStatus(item_status.c_str());
+                item.SetLastCounted(item_lastCounted);
+                item.SetDateAdded(item_dateAdded);
+
+                count.m_items.emplace_back(item);
+            }
+            inventoryCounts.emplace_back(count);
+        }
+        return inventoryCounts;
     }
 }
