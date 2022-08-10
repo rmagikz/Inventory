@@ -138,11 +138,19 @@ namespace SimpleInventory {
         }
     }
 
-    void InvIO::ExportToJSON(const std::vector<Category>& inventoryList, const std::vector<Count>& inventoryCounts) {
+    void InvIO::ExportToJSON(const std::vector<Category>& inventoryList, const std::vector<Count>& counts, const char* path) {
         std::fstream newJson;
-        newJson.open("inventory.json", std::ios::out);
-        newJson << JsonInventory(inventoryList, inventoryCounts);
+        newJson.open(path + "inventory.json"s, std::ios::out);
+        newJson << JsonInventory(inventoryList, counts);
         newJson.close();
+    }
+
+    std::string InvIO::ImportJSON(const char* path) {
+        std::ifstream newJson(path + "inventory.json"s, std::ios::out);
+        std::stringstream stream;
+        stream << newJson.rdbuf();
+        std::cout << stream.str() << std::endl;
+        return stream.str();
     }
 
     std::vector<Category> InvIO::FromJSONInventory(const std::string& rawJson) {

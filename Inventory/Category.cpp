@@ -35,7 +35,7 @@ namespace SimpleInventory {
         m_items.push_back(Item(m_name, m_items.size() + 1, uuid));
     }
 
-    void Category::PushItem(Item& item) {
+    void Category::PushItem(const Item& item) {
         m_items.push_back(item);
     }
 

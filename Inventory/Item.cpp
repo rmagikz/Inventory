@@ -11,12 +11,12 @@ namespace SimpleInventory {
         return *this;
     }
 
-    void Item::SetId(std::string& id) { m_id = id; }
-    void Item::SetLastCounted(std::string& lastCounted) { m_lastCounted = lastCounted; }
+    void Item::SetId(const std::string& id) { m_id = id; }
+    void Item::SetLastCounted(const std::string& lastCounted) { m_lastCounted = lastCounted; }
 
-    void Item::SetUUID(std::string& id) { m_uuid = std::stoi(id); }
-    void Item::SetDateAdded(std::string& dateAdded) { m_dateAdded = dateAdded; }
-    void Item::SetParent(std::string& parentName) { m_parentName = parentName; }
+    void Item::SetUUID(const std::string& id) { m_uuid = std::stoi(id); }
+    void Item::SetDateAdded(const std::string& dateAdded) { m_dateAdded = dateAdded; }
+    void Item::SetParent(const std::string& parentName) { m_parentName = parentName; }
 
     void Item::SetStatus(const char* status) {
         for (int i = 0; i < 3; i++) {

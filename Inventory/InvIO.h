@@ -9,6 +9,7 @@
 #include <JSONParser.h>
 
 #include <fstream>
+#include <sstream>
 
 namespace SimpleInventory {
     using namespace std::string_literals;
@@ -33,7 +34,9 @@ namespace SimpleInventory {
         std::string JsonCount(const std::vector<Count>& inventoryCounts);
 
         void ExportToExcel(std::vector<Category>& inventory, const std::string& fileName = "newTable", const std::string& filePath = ".");
-        void ExportToJSON(const std::vector<Category>& inventoryList, const std::vector<Count>& inventoryCounts);
+        void ExportToJSON(const std::vector<Category>& inventoryList, const std::vector<Count>& counts, const char* path);
+
+        std::string ImportJSON(const char* path);
 
         std::vector<Category> FromJSONInventory(const std::string& rawJson);
         std::vector<Count> FromJSONCounts(const std::string& rawJson);

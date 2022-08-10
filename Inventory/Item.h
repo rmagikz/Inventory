@@ -24,11 +24,11 @@ namespace SimpleInventory {
         Item();
 
         void SetStatus(const char* status);
-        void SetId(std::string& id);
-        void SetUUID(std::string& id);
-        void SetDateAdded(std::string& dateAdded);
-        void SetParent(std::string& parentName);
-        void SetLastCounted(std::string& lastCounted);
+        void SetId(const std::string& id);
+        void SetUUID(const std::string& id);
+        void SetDateAdded(const std::string& dateAdded);
+        void SetParent(const std::string& parentName);
+        void SetLastCounted(const std::string& lastCounted);
 
         int GetUUID() const;
         std::string GetId() const;

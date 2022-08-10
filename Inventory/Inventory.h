@@ -19,6 +19,7 @@ namespace SimpleInventory {
         Count* currentCount;
         DBHandler db_handler;
         InvIO IO;
+        std::string localSavePath;
         int m_count;
         SAVE_MODE mSaveMode;
 
@@ -43,6 +44,8 @@ namespace SimpleInventory {
         void ExitCount();
 
         void SaveMode(const SAVE_MODE& saveMode);
+        void InitDB(const char* uri, const char* db = "Inventory", const char* collection = "inv0");
+        void SetSavePath(const char* savePath);
 
         void ExportToExcel();
         

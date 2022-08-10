@@ -2,9 +2,8 @@
 
 namespace SimpleInventory {
 
-    Inventory::Inventory() :  db_handler({}), IO({}), m_count(0), mSaveMode(LOCAL) {
+    Inventory::Inventory() : db_handler({}), IO({}), localSavePath(""), m_count(0), mSaveMode(LOCAL) {
         CoInitialize(NULL);
-        db_handler.Init("mongodb+srv://magikz:Jessyca121@inv0.kwfwq.mongodb.net/inv0&authSource=admin", "Inventory", "inv0");
     }
 
     Category* Inventory::FindCategoryID(const int& categoryId) {
@@ -126,13 +125,22 @@ namespace SimpleInventory {
         mSaveMode = saveMode;
     }
 
+    void Inventory::InitDB(const char* uri, const char* db, const char* collection) {
+        db_handler.Init(uri, db, collection);
+    }
+
+    void Inventory::SetSavePath(const char* savePath) {
+        localSavePath = savePath;
+    }
+
     void Inventory::ExportToExcel() {
         IO.ExportToExcel(inventoryList);
     }
 
     void Inventory::Save() {
         if (mSaveMode == LOCAL) {
-            //IO.ExportToJSON(inventoryList);
+            if (localSavePath == "") throw std::exception("Save path not set");
+            IO.ExportToJSON(inventoryList, inventoryCounts, localSavePath.c_str());
         }
         if (mSaveMode == MONGODB) {
             db_handler.Save(IO.JsonInventory(inventoryList, inventoryCounts));
@@ -141,7 +149,10 @@ namespace SimpleInventory {
 
     void Inventory::Load() {
         if (mSaveMode == LOCAL) {
-
+            if (localSavePath == "") throw std::exception("Save path not set");
+            std::string loadedJSON = IO.ImportJSON(localSavePath.c_str());
+            inventoryList = IO.FromJSONInventory(loadedJSON);
+            inventoryCounts = IO.FromJSONCounts(loadedJSON);
         }
         if (mSaveMode == MONGODB) {
             std::string loadedJSON = db_handler.Load();

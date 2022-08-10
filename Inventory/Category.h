@@ -19,7 +19,7 @@ namespace SimpleInventory {
 
         Item* FindItemID(const int& itemId);
         void AddItem(const int& uuid);
-        void PushItem(Item& item);
+        void PushItem(const Item& item);
 
         void Display();
 
